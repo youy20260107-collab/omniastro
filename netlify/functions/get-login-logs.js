@@ -1,42 +1,76 @@
 // netlify/functions/get-login-logs.js
 //
-// 這是給「管理者」查看登入紀錄用的 API：
-//   GET /.netlify/functions/get-login-logs
-// 前端呼叫時要帶著登入者的 JWT（見下方 admin 面板範例），
-// 函式會檢查這個人的 Netlify Identity 帳號是否有 "admin" 角色，
-// 沒有的話一律回 401，避免任何登入使用者都能看到別人的登入紀錄。
+// 管理員專用 API：GET /.netlify/functions/get-login-logs
+//
+// v10.2 改版：判斷「誰是管理者」的方式改成 Netlify 環境變數 ADMIN_EMAILS，
+// 不再用 app_metadata.roles。原因：roles 是存在使用者的登入權杖（JWT）裡，
+// 後台改了角色之後，一定要「登出再重新登入」權杖才會更新，容易搞混、卡關；
+// 環境變數是伺服器每次即時讀取，改完存檔、重新整理頁面就生效，不用重新登入。
+//
+// 設定方式：Netlify 後台 → Project configuration → Environment variables，
+// 新增一筆 ADMIN_EMAILS，值填你的登入信箱（多個管理者用逗號分隔，
+// 例如 "felix670131@gmail.com,other@gmail.com"），存檔後重新部署一次網站。
 
-const { getStore, connectLambda } = require('@netlify/blobs');
+const { getStore, connectLambda } = require("@netlify/blobs");
+
+const MAX_RECORDS = 300;
 
 exports.handler = async (event, context) => {
-  // 同樣要先呼叫 connectLambda(event)，Netlify Blobs 才能正常運作。
-  connectLambda(event);
-
-  const user = context.clientContext && context.clientContext.user;
-  const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
-
-  if (!user || !roles.includes('admin')) {
-    return { statusCode: 401, body: JSON.stringify({ error: '沒有權限查看登入紀錄' }) };
-  }
-
   try {
-    const store = getStore('login-logs');
-    const { blobs } = await store.list();
+    connectLambda(event);
 
-    const records = await Promise.all(
-      blobs.map((b) => store.get(b.key, { type: 'json' }))
-    );
+    if (event.httpMethod !== "GET") {
+      return jsonResponse(405, { error: "不支援的方法" });
+    }
 
-    // 新的登入排前面
-    records.sort((a, b) => (b?.loginAt || '').localeCompare(a?.loginAt || ''));
+    const user = context.clientContext && context.clientContext.user;
+    if (!user || !user.sub) {
+      return jsonResponse(401, { error: "尚未登入。" });
+    }
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(records),
-    };
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean);
+
+    if (adminEmails.length === 0) {
+      return jsonResponse(403, {
+        error: "尚未設定管理者名單。請到 Netlify 後台 Project configuration → " +
+          "Environment variables，新增 ADMIN_EMAILS（值填你的登入信箱），存檔後重新部署一次網站。",
+      });
+    }
+
+    const myEmail = (user.email || "").toLowerCase();
+    if (adminEmails.indexOf(myEmail) === -1) {
+      return jsonResponse(403, { error: "這個帳號沒有查看登入紀錄的權限。" });
+    }
+
+    const store = getStore("zhenmingpan-login-logs");
+    const listResult = await store.list();
+    let keys = (listResult && listResult.blobs) ? listResult.blobs.map((b) => b.key) : [];
+    keys.sort().reverse();
+    keys = keys.slice(0, MAX_RECORDS);
+
+    const records = [];
+    for (const key of keys) {
+      try {
+        const raw = await store.get(key);
+        if (raw) records.push(JSON.parse(raw));
+      } catch (e) {
+        // 單筆壞資料跳過，不要讓整份清單讀不出來
+      }
+    }
+    return jsonResponse(200, { records });
   } catch (err) {
-    console.error('[get-login-logs] 讀取失敗：', err);
-    return { statusCode: 500, body: JSON.stringify({ error: '讀取登入紀錄失敗' }) };
+    console.error("[get-login-logs] 讀取失敗：", err);
+    return jsonResponse(500, { error: "讀取失敗：" + (err && err.message ? err.message : String(err)) });
   }
 };
+
+function jsonResponse(statusCode, bodyObj) {
+  return {
+    statusCode: statusCode,
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(bodyObj),
+  };
+}

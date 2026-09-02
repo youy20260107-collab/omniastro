@@ -3,9 +3,9 @@
 // 管理員專用 API：
 //   GET /.netlify/functions/get-all-user-charts
 // 回傳「所有」使用者的命盤存摺資料（不是只有自己的），給管理者查看/客服使用。
-// 前端呼叫時要帶管理員自己的 JWT，函式會檢查 app_metadata.roles 是否包含 "admin"，
-// 不是的話一律回 401 —— 一般使用者永遠只能透過 data.js 讀到「自己」的資料，
-// 這支函式是唯一能跨使用者讀取的入口，所以權限檢查特別重要。
+//
+// v10.2 改版：管理者判斷改用 Netlify 環境變數 ADMIN_EMAILS（跟 get-login-logs.js
+// 同一套邏輯），不再用 app_metadata.roles，改完環境變數馬上生效、不用重新登入。
 //
 // email 對照表是透過 Netlify 提供給函式的「管理員短效權杖」
 // （context.clientContext.identity）去查 Identity 的使用者名單取得，
@@ -17,9 +17,25 @@ exports.handler = async (event, context) => {
   connectLambda(event);
 
   const user = context.clientContext && context.clientContext.user;
-  const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
-  if (!user || !roles.includes('admin')) {
-    return jsonResponse(401, { error: '沒有權限查看使用者資料' });
+  if (!user || !user.sub) {
+    return jsonResponse(401, { error: '尚未登入' });
+  }
+
+  const adminEmails = (process.env.ADMIN_EMAILS || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+
+  if (adminEmails.length === 0) {
+    return jsonResponse(403, {
+      error: '尚未設定管理者名單。請到 Netlify 後台 Project configuration → ' +
+        'Environment variables，新增 ADMIN_EMAILS（值填你的登入信箱），存檔後重新部署一次網站。',
+    });
+  }
+
+  const myEmail = (user.email || '').toLowerCase();
+  if (adminEmails.indexOf(myEmail) === -1) {
+    return jsonResponse(403, { error: '這個帳號沒有查看使用者資料的權限' });
   }
 
   try {
