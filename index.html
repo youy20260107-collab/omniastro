@@ -1036,14 +1036,47 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
     var label = (user && (user.email || (user.user_metadata && user.user_metadata.full_name))) || '已登入';
     userEmail.textContent = label;
 
-    // 只有 app_metadata.roles 裡有 "admin" 的帳號，才會看到「管理者專用入口」
-    var roles = (user && user.app_metadata && user.app_metadata.roles) || [];
-    var adminEntry = document.getElementById('auth-admin-entry');
-    if (adminEntry) adminEntry.classList.toggle('show', roles.indexOf('admin') !== -1);
+    // v10.2 改版：admin 判斷改成問後端（ADMIN_EMAILS 環境變數），不再看 JWT 裡的
+    // app_metadata.roles——這樣後台改完管理者名單，重新整理頁面就生效，不用重新登入。
+    checkIsAdminAndToggleEntry();
 
     // 通知頁面其他模組（例如命盤存摺）：登入身分已確認，可以開始跟雲端同步資料。
     window.__zmpUser = user;
     document.dispatchEvent(new CustomEvent('zmp:auth-ready', { detail: user }));
+
+    // v10.2 新增：登入成功後記一筆登入紀錄（呼叫 log-login.js，不是自動觸發的
+    // identity-login，所以就算這支失敗也絕對不會影響登入本身）。
+    recordLoginOnce(user);
+  }
+  async function checkIsAdminAndToggleEntry(){
+    var adminEntry = document.getElementById('auth-admin-entry');
+    if (!adminEntry) return;
+    var user = window.netlifyIdentity && netlifyIdentity.currentUser();
+    if (!user) { adminEntry.classList.remove('show'); return; }
+    try{
+      var res = await fetch('/.netlify/functions/get-login-logs', {
+        headers: { 'Authorization': 'Bearer ' + user.token.access_token }
+      });
+      adminEntry.classList.toggle('show', res.status !== 401 && res.status !== 403);
+    }catch(e){ adminEntry.classList.remove('show'); }
+  }
+  // 每個瀏覽器分頁只記一次，成功才設旗標；失敗（含網路問題）不設旗標，
+  // 下次同一分頁再次觸發登入流程時會自動重試，不會被卡住。
+  function recordLoginOnce(user){
+    var flagOk = true;
+    try{ if (sessionStorage.getItem('zmp_login_logged_v1')) return; }
+    catch(e){ flagOk = false; }
+    if (!user || typeof user.jwt !== 'function') return;
+    user.jwt().then(function(token){
+      return fetch('/.netlify/functions/log-login', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+    }).then(function(res){
+      if (res && res.ok && flagOk) {
+        try{ sessionStorage.setItem('zmp_login_logged_v1', '1'); }catch(e){}
+      }
+    }).catch(function(){ /* 安靜失敗，不影響使用者 */ });
   }
   function setNote(msg){
     if (gateNote) gateNote.textContent = msg;
@@ -1144,21 +1177,23 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
       var res = await fetch('/.netlify/functions/get-login-logs', {
         headers: { 'Authorization': 'Bearer ' + user.token.access_token }
       });
-      if (res.status === 401) {
-        logStatus.textContent = '⚠️ 這個帳號沒有管理員權限（需在 Netlify Identity 後台設定 app_metadata.roles = ["admin"]）。';
+      if (res.status === 401 || res.status === 403) {
+        var errBody = await res.json().catch(function(){ return {}; });
+        logStatus.textContent = '⚠️ ' + (errBody.error || '這個帳號沒有查看登入紀錄的權限。');
         return;
       }
       if (!res.ok) {
         logStatus.textContent = '⚠️ 讀取失敗（狀態碼 ' + res.status + '），請確認此網站已部署 Netlify Functions。';
         return;
       }
-      var logs = await res.json();
+      var data = await res.json();
+      var logs = data.records || [];
       logTbody.innerHTML = '';
       logs.forEach(function(r){
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td>' + fmtTime(r.loginAt) + '</td>' +
-          '<td class="email-cell">' + (r.email || '') + '</td>' +
+          '<td>' + fmtTime(r.ts) + '</td>' +
+          '<td class="email-cell">' + (r.email || '') + (r.name ? '（' + r.name + '）' : '') + '</td>' +
           '<td>' + (r.provider || '') + '</td>';
         logTbody.appendChild(tr);
       });
@@ -1208,8 +1243,9 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
       var res = await fetch('/.netlify/functions/get-all-user-charts', {
         headers: { 'Authorization': 'Bearer ' + user.token.access_token }
       });
-      if (res.status === 401) {
-        alldataStatus.textContent = '⚠️ 這個帳號沒有管理員權限（需在 Netlify Identity 後台設定 app_metadata.roles = ["admin"]）。';
+      if (res.status === 401 || res.status === 403) {
+        var errBody2 = await res.json().catch(function(){ return {}; });
+        alldataStatus.textContent = '⚠️ ' + (errBody2.error || '這個帳號沒有查看使用者資料的權限。');
         return;
       }
       if (!res.ok) {
