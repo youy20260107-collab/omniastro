@@ -10,12 +10,15 @@
 const { getStore, connectLambda } = require('@netlify/blobs');
 
 exports.handler = async (event) => {
-  // 用 exports.handler（Lambda 相容模式）時，Netlify Blobs 不會自動注入連線資訊，
-  // 一定要在 getStore() 之前先呼叫 connectLambda(event)，否則會出現
-  // MissingBlobsEnvironmentError。
-  connectLambda(event);
-
   try {
+    // 用 exports.handler（Lambda 相容模式）時，Netlify Blobs 不會自動注入連線資訊，
+    // 一定要在 getStore() 之前先呼叫 connectLambda(event)，否則會出現
+    // MissingBlobsEnvironmentError。這行本身也可能失敗，所以要放進 try 裡面，
+    // 不然一旦它出錯，這支函式會直接整個當掉（拋出未捕捉的例外），
+    // Netlify Identity 就會回報「Failed to handle login/signup webhook」，
+    // 導致使用者整個登入失敗，而不是我們原本設計的「記錄失敗就算了、照樣讓你登入」。
+    connectLambda(event);
+
     const body = JSON.parse(event.body || '{}');
     // Netlify 觸發時，事件內容會放在 payload 裡
     const user = body.user || body.payload || {};
