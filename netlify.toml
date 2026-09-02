@@ -1,0 +1,5 @@
+[build]
+  functions = "netlify/functions"
+  # 如果你的網站主要就是靜態 HTML（例如那個真命盤單頁），
+  # publish 目錄設成放 html 檔的資料夾即可，例如根目錄用 "."
+  publish = "."
