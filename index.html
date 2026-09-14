@@ -37,6 +37,13 @@
   --paper-dim:#6b7280;
   --line:#e4e7ec;
   --radius:12px;
+  /* v10.3新增（缺失③修正）：5大功能模組各自的識別主色，數值刻意選擇彼此可明顯區分、
+     同時與既有 --gold(深藍)/--jade(金棕)/--crimson(危險色) 不衝突的色相。 */
+  --accent-core:#33447a;         /* 🔮 命盤系統：沿用主色調深藍，因為是入口模組 */
+  --accent-reportcenter:#b8925a; /* 📊 命盤報告中心：金棕，呼應「報告/文件」既有色感 */
+  --accent-yearzeri:#2f6b4f;     /* 📅 流年與擇日中心：墨綠，呼應曆法/節氣 */
+  --accent-compat:#a8517a;       /* 💞 合盤比對：玫瑰豆沙，呼應「關係」 */
+  --accent-planmarketing:#6b4fa0;/* 🎯 我的計畫與行銷：紫色，區隔於其他四色 */
   --serif:'Noto Sans TC',sans-serif;
   --sans:'Noto Sans TC',sans-serif;
   --mono:'JetBrains Mono',monospace;
@@ -84,7 +91,7 @@ a{color:var(--gold);}
 .version-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end;margin-top:14px;}
 .version-chips .v-badge{background:var(--gold-soft);color:#fff;font-family:var(--mono);font-size:14px;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.05em;}
 .version-chips .v-chip{border:1px solid var(--line);color:var(--paper-dim);font-size:14px;padding:4px 10px;border-radius:999px;}
-@media (max-width:720px){ .version-chips{justify-content:center;} }
+@media (max-width:1024px){ .version-chips{justify-content:center;} }
 /* v9.7新增：版本更新細節改為滑鼠移入／點擊才展開的彈出面板，避免長串更新紀錄常態佔用版面高度 */
 /* v9.7.1修正：原本用position:absolute會被祖先.hero的overflow:hidden裁切、內容被蓋住，
    改為position:fixed並由JS依按鈕實際位置計算座標，徹底跳脫任何父層overflow/堆疊環境的裁切問題 */
@@ -105,7 +112,7 @@ a{color:var(--gold);}
   opacity:1; visibility:visible; transform:translateY(0); pointer-events:auto;
 }
 .version-chips-popover .v-chip{border:1px solid var(--line);color:var(--paper-dim);font-size:14px;padding:4px 10px;border-radius:999px;}
-@media (max-width:720px){
+@media (max-width:1024px){
   .version-chips-wrap{justify-content:center;}
 }
 .wheel-wrap{
@@ -115,7 +122,7 @@ a{color:var(--gold);}
 .wheel-rotate{animation:spin 140s linear infinite;transform-box:fill-box;transform-origin:50% 50%;}
 @keyframes spin{to{transform:rotate(360deg);}}
 @media (prefers-reduced-motion:reduce){.wheel-rotate{animation:none;}}
-@media (max-width:720px){
+@media (max-width:1024px){
   .hero-inner{flex-direction:column;text-align:center;}
   .hero-text{text-align:center;max-width:100%;}
 }
@@ -175,6 +182,12 @@ input:focus,select:focus{border-color:var(--gold);}
 }
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(51,68,122,0.22);}
 .btn-primary:active{transform:translateY(0);}
+/* v10.3新增：全站按鈕統一「點擊回饋」動畫（缺失②修正）——任何被點擊的主要／小型按鈕
+   都會立即出現短暫的縮放脈動，讓使用者確定「這一下真的被系統接收到了」，
+   不影響按鈕原本的功能與外觀，動畫結束後自動移除class、按鈕恢復原狀。 */
+@keyframes btnClickPulse{ 0%{transform:scale(1);} 40%{transform:scale(.95);} 100%{transform:scale(1);} }
+.btn-clicked-pulse{ animation:btnClickPulse .25s ease; }
+@media (prefers-reduced-motion:reduce){ .btn-clicked-pulse{ animation:none; } }
 .city-quick-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px;}
 .city-quick-row select{flex:1;min-width:140px;}
 .field-hint{font-size:14px;color:var(--paper-dim);margin:6px 0 0;line-height:1.6;}
@@ -213,11 +226,43 @@ input:focus,select:focus{border-color:var(--gold);}
 }
 .tab-btn:hover{background:var(--ink-700);color:var(--paper);}
 .tab-btn.active{color:var(--gold);border-left-color:var(--gold);background:var(--ink-700);font-weight:700;}
+/* v10.3新增（缺失③修正）：5大模組個別識別色——分類按鈕與其子頁籤在「作用中」時，
+   改用該模組自己的主色而非統一的--gold，讓使用者切換模組時能從顏色立即感知「換區了」。
+   此處只覆蓋顏色，不改變任何既有版面、間距、字重等規則。 */
+.tab-group-btn[data-group="core"].active{color:var(--accent-core);border-color:var(--accent-core);}
+.tab-group-btn[data-group="reportcenter"].active{color:var(--accent-reportcenter);border-color:var(--accent-reportcenter);}
+.tab-group-btn[data-group="yearzeri"].active{color:var(--accent-yearzeri);border-color:var(--accent-yearzeri);}
+.tab-group-btn[data-group="compat"].active{color:var(--accent-compat);border-color:var(--accent-compat);}
+.tab-group-btn[data-group="planmarketing"].active{color:var(--accent-planmarketing);border-color:var(--accent-planmarketing);}
+.tab-group-panel[data-group="core"] .tab-btn.active{color:var(--accent-core);border-left-color:var(--accent-core);}
+.tab-group-panel[data-group="reportcenter"] .tab-btn.active{color:var(--accent-reportcenter);border-left-color:var(--accent-reportcenter);}
+.tab-group-panel[data-group="yearzeri"] .tab-btn.active{color:var(--accent-yearzeri);border-left-color:var(--accent-yearzeri);}
+.tab-group-panel[data-group="compat"] .tab-btn.active{color:var(--accent-compat);border-left-color:var(--accent-compat);}
+.tab-group-panel[data-group="planmarketing"] .tab-btn.active{color:var(--accent-planmarketing);border-left-color:var(--accent-planmarketing);}
+/* 內容區塊頂端色條，讓使用者連視線不用移到左側選單，掃一眼內容區上緣就知道自己在哪個模組 */
+.tab-content{border-top:4px solid var(--line);transition:border-color .2s ease;}
+body[data-active-group="core"] .tab-content{border-top-color:var(--accent-core);}
+body[data-active-group="reportcenter"] .tab-content{border-top-color:var(--accent-reportcenter);}
+body[data-active-group="yearzeri"] .tab-content{border-top-color:var(--accent-yearzeri);}
+body[data-active-group="compat"] .tab-content{border-top-color:var(--accent-compat);}
+body[data-active-group="planmarketing"] .tab-content{border-top-color:var(--accent-planmarketing);}
 .tab-content{flex:1;min-width:0;}
 .tab-panel{display:none;}
 .tab-panel.active{display:block;animation:fade .3s ease;}
 @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-@media (max-width:860px){
+/* v10.4新增（缺失①修正）：命盤報告中心5段合併顯示時的視覺區隔——
+   每段前面加一條標題列，讓使用者一路往下捲動時仍能清楚分辨「現在看的是哪一段」，
+   而不是5段內容毫無區隔地黏在一起。只影響 report-section-label／report-merged-section
+   這兩個新class，不影響其他20多個既有 .tab-panel 的外觀。 */
+.report-section-label{
+  display:none;font-family:var(--sans);font-size:15px;font-weight:700;
+  color:var(--accent-reportcenter);letter-spacing:.02em;
+  padding:10px 0 8px;margin-top:28px;border-bottom:2px solid var(--accent-reportcenter);
+}
+.report-section-label.active{display:block;}
+.report-section-label.active:first-of-type{margin-top:0;}
+.tab-panel.report-merged-section{scroll-margin-top:16px;}
+@media (max-width:1024px){
   .dashboard-shell{flex-direction:column;gap:0;}
   .tabs-shell{width:100%;position:static;}
   .tabs{
@@ -231,7 +276,7 @@ input:focus,select:focus{border-color:var(--gold);}
 
 /* v8.2新增：手機版頁籤改用下拉選單，避免14個橫向頁籤需要大量滑動才能找到目標功能 */
 .tab-mobile-select{display:none;}
-@media (max-width:860px){
+@media (max-width:1024px){
   .tab-mobile-select{
     display:block;width:100%;margin-bottom:16px;background:var(--ink-800);color:var(--paper);
     border:1px solid var(--line);border-radius:10px;padding:12px 14px;
@@ -263,7 +308,7 @@ input:focus,select:focus{border-color:var(--gold);}
 .pillar-card .gz{font-family:var(--serif);font-size:26px;color:var(--gold-soft);font-weight:700;letter-spacing:.05em;}
 .pillar-card .wx{font-size:14px;color:var(--jade-soft);margin-top:6px;font-family:var(--mono);}
 /* v8.8新增：四柱卡片與宮位格在極窄螢幕（如iPhone SE等 ≤480px）維持4欄會過度擁擠，改收合為2欄兩排顯示 */
-@media (max-width:480px){
+@media (max-width:640px){
   .pillars-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
   .pillar-card .gz{font-size:22px;}
   .palace-grid{grid-template-columns:repeat(2,1fr);}
@@ -320,7 +365,7 @@ input:focus,select:focus{border-color:var(--gold);}
 .ziwei-center .zc-title{font-family:var(--serif);color:var(--gold-soft);font-size:14px;}
 .ziwei-center .zc-line{font-size:14px;color:var(--paper-dim);line-height:1.7;}
 .ziwei-center .zc-line b{color:var(--paper);}
-@media (max-width:720px){
+@media (max-width:1024px){
   .ziwei-chart{gap:4px;}
   .zc-palace{padding:6px 6px;min-height:88px;}
   .zc-pname{font-size:14px;}
@@ -389,7 +434,7 @@ input:focus,select:focus{border-color:var(--gold);}
    十幾處功能模組的表格，先前窄螢幕下完全沒有捲動或防溢出處理，長內容儲存格（如流年重點提醒、姓名學
    候選字列表）在手機上容易撐破版面或被裁切。統一改為：窄螢幕下表格可左右捲動，儲存格文字正常換行，
    不需逐一修改每處產生表格的程式碼。 */
-@media (max-width:720px){
+@media (max-width:1024px){
   .data-table, .ln-table{
     display:block; overflow-x:auto; -webkit-overflow-scrolling:touch;
   }
@@ -591,7 +636,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--paper-dim);font-size:14
 .precision-body p{margin:0 0 8px;}
 .precision-body b{color:var(--paper);}
 
-@media (max-width:720px){
+@media (max-width:1024px){
   .form-grid{grid-template-columns:1fr;}
   .pillars-grid{grid-template-columns:repeat(2,1fr);}
   .palace-grid{grid-template-columns:repeat(2,1fr);}
@@ -676,7 +721,7 @@ footer{padding:34px 0 60px;text-align:center;color:var(--paper-dim);font-size:14
 }
 .pitch-cta button:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(51,68,122,0.36);}
 #form-section.hidden-until-cta{display:none;}
-@media (max-width:720px){
+@media (max-width:1024px){
   /* v9.8.1修正：改用獨立的 .compare-table-scroll 外層容器負責overflow-x:auto，不再對<table>本身
      動display屬性——先前對<table>直接套用display:block+overflow-x:auto的手法在部分行動瀏覽器
      （尤其iOS Safari）上支援度不穩定，且原本「.compare-table table, .compare-table{min-width:680px}」
@@ -825,7 +870,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color:var(--paper-dim); padding:2px 4px; border-radius:6px; line-height:1;
 }
 .global-error-toast .get-close:hover{ background:var(--ink-700); color:var(--paper); }
-@media (max-width:520px){ .global-error-toast{ top:8px; padding:12px 14px; } }
+@media (max-width:640px){ .global-error-toast{ top:8px; padding:12px 14px; } }
 
 /* ===== 登入門檻遮罩（Netlify Identity）===== */
 #auth-gate{
@@ -1036,9 +1081,11 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
     var label = (user && (user.email || (user.user_metadata && user.user_metadata.full_name))) || '已登入';
     userEmail.textContent = label;
 
-    // v10.2 改版：admin 判斷改成問後端（ADMIN_EMAILS 環境變數），不再看 JWT 裡的
-    // app_metadata.roles——這樣後台改完管理者名單，重新整理頁面就生效，不用重新登入。
-    checkIsAdminAndToggleEntry();
+    // v10.3：任何登入使用者都直接看得到「管理者專用入口」連結；
+    // 實際能不能看到內容，還是由後端 ADMIN_EMAILS 名單把關（非管理者點進去
+    // 只會看到「沒有權限」的訊息，不會真的讀到別人的資料）。
+    var adminEntry = document.getElementById('auth-admin-entry');
+    if (adminEntry) adminEntry.classList.add('show');
 
     // 通知頁面其他模組（例如命盤存摺）：登入身分已確認，可以開始跟雲端同步資料。
     window.__zmpUser = user;
@@ -1047,18 +1094,6 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
     // v10.2 新增：登入成功後記一筆登入紀錄（呼叫 log-login.js，不是自動觸發的
     // identity-login，所以就算這支失敗也絕對不會影響登入本身）。
     recordLoginOnce(user);
-  }
-  async function checkIsAdminAndToggleEntry(){
-    var adminEntry = document.getElementById('auth-admin-entry');
-    if (!adminEntry) return;
-    var user = window.netlifyIdentity && netlifyIdentity.currentUser();
-    if (!user) { adminEntry.classList.remove('show'); return; }
-    try{
-      var res = await fetch('/.netlify/functions/get-login-logs', {
-        headers: { 'Authorization': 'Bearer ' + user.token.access_token }
-      });
-      adminEntry.classList.toggle('show', res.status !== 401 && res.status !== 403);
-    }catch(e){ adminEntry.classList.remove('show'); }
   }
   // 每個瀏覽器分頁只記一次，成功才設旗標；失敗（含網路問題）不設旗標，
   // 下次同一分頁再次觸發登入流程時會自動重試，不會被卡住。
@@ -1586,10 +1621,13 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
     </div>
     <div class="dashboard-shell">
       <select class="tab-mobile-select" id="tabMobileSelect" aria-label="切換功能頁籤"></select>
-      <!-- v8.7.2修正：手風琴式頁籤分組導覽——v8.7版把「分類按鈕」與「子頁籤」拆成上下兩個獨立區塊，
-           點擊分類時子頁籤卻固定顯示在所有分類按鈕的最下方、位置對不上，故此版改為「分類按鈕＋其子頁籤」
-           緊鄰排列（手風琴），子頁籤永遠緊接在被點擊的分類按鈕正下方。同時將「進階分析」併入「命盤系統」，
-           降為6大分類。原有 .tab-btn（id／data-tab／aria-controls等）與下方 .tab-panel 內容容器完全不變動。 -->
+      <!-- v10.3更新：將原本的8大分類（命盤系統／命盤報告中心／流年流月／擇日風水／農民曆通書／
+           合盤比對／行動計畫／行銷個人化）依「使用情境」重新整併為5大模組，解決「分類太多、
+           功能其實重疊、使用者要跳好幾次選單才找得到」的問題。
+           重要：這裡只是把下面每一顆 .tab-btn 按鈕「移動到哪一個分類的容器底下」而已，
+           每一顆 .tab-btn 的 id／data-tab／aria-controls，以及它所對應、完全沒有搬動過的
+           .tab-panel 內容區塊與其渲染函式(registerTabRenderer)，全部維持100%不變，
+           因此原本26＋1＝27個功能一個都沒有減少，只是重新分類擺放位置。 -->
       <div class="tabs-shell">
         <div class="tabs" role="tablist" aria-label="命盤分析項目切換">
           <button type="button" class="tab-group-btn active" data-group="core" aria-selected="true">🔮 命盤系統</button>
@@ -1611,20 +1649,14 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
             <button class="tab-btn" data-tab="timeline" role="tab" id="tabbtn-timeline" aria-controls="panel-timeline" aria-selected="false" tabindex="-1">🕰️ 命盤時間軸</button>
             <button class="tab-btn" data-tab="feedback" role="tab" id="tabbtn-feedback" aria-controls="panel-feedback" aria-selected="false" tabindex="-1">🗳️ 準確度回饋與回測</button>
           </div>
-          <button type="button" class="tab-group-btn" data-group="yearflow" aria-selected="false">📅 流年流月</button>
-          <div class="tab-group-panel" data-group="yearflow">
+          <button type="button" class="tab-group-btn" data-group="yearzeri" aria-selected="false">📅 流年與擇日中心</button>
+          <div class="tab-group-panel" data-group="yearzeri">
             <button class="tab-btn" data-tab="liunian" role="tab" id="tabbtn-liunian" aria-controls="panel-liunian" aria-selected="false" tabindex="-1">📅 流年運勢 9~90歲</button>
             <button class="tab-btn" data-tab="liuyue" role="tab" id="tabbtn-liuyue" aria-controls="panel-liuyue" aria-selected="false" tabindex="-1">🗓️ 流月流日精算</button>
             <button class="tab-btn" data-tab="yearsynth" role="tab" id="tabbtn-yearsynth" aria-controls="panel-yearsynth" aria-selected="false" tabindex="-1">🔗 年度綜合摘要</button>
-          </div>
-          <button type="button" class="tab-group-btn" data-group="zeri" aria-selected="false">🗓️ 擇日風水</button>
-          <div class="tab-group-panel" data-group="zeri">
             <button class="tab-btn" data-tab="zeri" role="tab" id="tabbtn-zeri" aria-controls="panel-zeri" aria-selected="false" tabindex="-1">🎯 擇日Copilot</button>
             <button class="tab-btn" data-tab="bizzeri" role="tab" id="tabbtn-bizzeri" aria-controls="panel-bizzeri" aria-selected="false" tabindex="-1">🏢 企業擇日</button>
             <button class="tab-btn" data-tab="fengshui" role="tab" id="tabbtn-fengshui" aria-controls="panel-fengshui" aria-selected="false" tabindex="-1">🧭 風水方位</button>
-          </div>
-          <button type="button" class="tab-group-btn" data-group="wannianli" aria-selected="false">📜 農民曆通書</button>
-          <div class="tab-group-panel" data-group="wannianli">
             <button class="tab-btn" data-tab="almanac" role="tab" id="tabbtn-almanac" aria-controls="panel-almanac" aria-selected="false" tabindex="-1">📜 每日宜忌通書</button>
             <button class="tab-btn" data-tab="zodiacyear" role="tab" id="tabbtn-zodiacyear" aria-controls="panel-zodiacyear" aria-selected="false" tabindex="-1">🐾 生肖流年速覽</button>
             <button class="tab-btn" data-tab="taishen" role="tab" id="tabbtn-taishen" aria-controls="panel-taishen" aria-selected="false" tabindex="-1">🤰 胎神方位</button>
@@ -1635,13 +1667,11 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
             <button class="tab-btn" data-tab="compat" role="tab" id="tabbtn-compat" aria-controls="panel-compat" aria-selected="false" tabindex="-1">💞 合盤比對</button>
             <button class="tab-btn" data-tab="teamcompat" role="tab" id="tabbtn-teamcompat" aria-controls="panel-teamcompat" aria-selected="false" tabindex="-1">👥 團隊相容性</button>
           </div>
-          <button type="button" class="tab-group-btn" data-group="actionplan" aria-selected="false">🎯 行動計畫</button>
-          <div class="tab-group-panel" data-group="actionplan">
+          <button type="button" class="tab-group-btn" data-group="planmarketing" aria-selected="false">🎯 我的計畫與行銷</button>
+          <div class="tab-group-panel" data-group="planmarketing">
             <button class="tab-btn" data-tab="actionplan" role="tab" id="tabbtn-actionplan" aria-controls="panel-actionplan" aria-selected="false" tabindex="-1">🎯 年度行動看板</button>
-          </div>
-          <button type="button" class="tab-group-btn" data-group="marketing" aria-selected="false">📣 行銷個人化</button>
-          <div class="tab-group-panel" data-group="marketing">
             <button class="tab-btn" data-tab="marketing" role="tab" id="tabbtn-marketing" aria-controls="panel-marketing" aria-selected="false" tabindex="-1">📣 行銷個人化</button>
+            <button class="tab-btn" data-tab="bizplan" role="tab" id="tabbtn-bizplan" aria-controls="panel-bizplan" aria-selected="false" tabindex="-1">🏆 企業方案</button>
           </div>
         </div>
       </div>
@@ -1653,11 +1683,17 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
         <div class="tab-panel" id="panel-name" role="tabpanel" aria-labelledby="tabbtn-name" tabindex="0"></div>
         <div class="tab-panel" id="panel-yijing" role="tabpanel" aria-labelledby="tabbtn-yijing" tabindex="0"></div>
         <div class="tab-panel" id="panel-tarot" role="tabpanel" aria-labelledby="tabbtn-tarot" tabindex="0"></div>
-        <div class="tab-panel" id="panel-report" role="tabpanel" aria-labelledby="tabbtn-report" tabindex="0"></div>
-        <div class="tab-panel" id="panel-aiqa" role="tabpanel" aria-labelledby="tabbtn-aiqa" tabindex="0"></div>
+        <div class="report-section-label" data-report-label="report">📊 綜合運勢報告</div>
+        <div class="tab-panel report-merged-section" id="panel-report" role="tabpanel" aria-labelledby="tabbtn-report" tabindex="0"></div>
+        <div class="report-section-label" data-report-label="aiqa">🔮 AI白話追問</div>
+        <div class="tab-panel report-merged-section" id="panel-aiqa" role="tabpanel" aria-labelledby="tabbtn-aiqa" tabindex="0"></div>
+        <div class="report-section-label" data-report-label="poster">📜 命盤解析報告</div>
+        <div class="tab-panel report-merged-section" id="panel-poster" role="tabpanel" aria-labelledby="tabbtn-poster" tabindex="0"></div>
         <div class="tab-panel" id="panel-liunian" role="tabpanel" aria-labelledby="tabbtn-liunian" tabindex="0"></div>
-        <div class="tab-panel" id="panel-timeline" role="tabpanel" aria-labelledby="tabbtn-timeline" tabindex="0"></div>
-        <div class="tab-panel" id="panel-feedback" role="tabpanel" aria-labelledby="tabbtn-feedback" tabindex="0"></div>
+        <div class="report-section-label" data-report-label="timeline">🕰️ 命盤時間軸</div>
+        <div class="tab-panel report-merged-section" id="panel-timeline" role="tabpanel" aria-labelledby="tabbtn-timeline" tabindex="0"></div>
+        <div class="report-section-label" data-report-label="feedback">🗳️ 準確度回饋與回測</div>
+        <div class="tab-panel report-merged-section" id="panel-feedback" role="tabpanel" aria-labelledby="tabbtn-feedback" tabindex="0"></div>
         <div class="tab-panel" id="panel-liuyue" role="tabpanel" aria-labelledby="tabbtn-liuyue" tabindex="0"></div>
         <div class="tab-panel" id="panel-yearsynth" role="tabpanel" aria-labelledby="tabbtn-yearsynth" tabindex="0"></div>
         <div class="tab-panel" id="panel-zeri" role="tabpanel" aria-labelledby="tabbtn-zeri" tabindex="0"></div>
@@ -1700,9 +1736,9 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
         <div class="tab-panel" id="panel-bizzeri" role="tabpanel" aria-labelledby="tabbtn-bizzeri" tabindex="0"></div>
         <div class="tab-panel" id="panel-actionplan" role="tabpanel" aria-labelledby="tabbtn-actionplan" tabindex="0"></div>
         <div class="tab-panel" id="panel-marketing" role="tabpanel" aria-labelledby="tabbtn-marketing" tabindex="0"></div>
+        <div class="tab-panel" id="panel-bizplan" role="tabpanel" aria-labelledby="tabbtn-bizplan" tabindex="0"></div>
         <div class="tab-panel" id="panel-palmface" role="tabpanel" aria-labelledby="tabbtn-palmface" tabindex="0"></div>
         <div class="tab-panel" id="panel-hourcalib" role="tabpanel" aria-labelledby="tabbtn-hourcalib" tabindex="0"></div>
-        <div class="tab-panel" id="panel-poster" role="tabpanel" aria-labelledby="tabbtn-poster" tabindex="0"></div>
       </div>
     </div>
 
@@ -3880,7 +3916,14 @@ function analyzeName(surname, givenName) {
     renge = sStrokes[sStrokes.length - 1] + gStrokes[0];
     dige = gStrokes.length === 1 ? gStrokes[0] + 1 : gStrokes.reduce((a, b) => a + b, 0);
   }
-  waige = zongge - renge + 1; // 標準公式：外格 = 總格 - 人格 + 1（單名時外格固定為2，此公式在單名時亦成立）
+  waige = zongge - renge + 1; // 標準公式：外格 = 總格 - 人格 + 1
+  // v10.6修正（缺失⑥）：單姓(1字)+單名(1字)時，人格＝總格（兩者都是姓+名的筆畫和，算的是同一組數字），
+  // 若沿用上面的一般公式會得出「外格＝總格－總格＋1＝1」，但傳統姓名學慣例對「單姓單名」這個特殊情況
+  // 另有明文規定——外格固定為2（代表「孤獨之數」，因為沒有其他字可搭配計算）。原本的程式碼在此處沒有
+  // 特別處理，且註解誤以為一般公式在此情況下也會得出2（實際上會得出1），這裡加上特殊情況判斷予以修正。
+  if (sStrokes.length === 1 && gStrokes.length === 1) {
+    waige = 2;
+  }
 
   const grids = { 天格: tiange, 人格: renge, 地格: dige, 外格: waige, 總格: zongge };
   const details = Object.entries(grids).map(([name, num]) => ({
@@ -4053,6 +4096,43 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     return el;
   }
 
+  // ================= v10.3新增：全域錯誤安全網（缺失⑥修正） =================
+  // 目的：任何按鈕背後的程式若拋出未預期例外、或非同步作業(Promise)失敗卻沒有被個別功能自行攔截處理，
+  // 過去畫面上完全不會有任何提示，使用者只會覺得「按了沒反應」。這裡在最外層加一道保險，
+  // 只要有例外「漏接」，就一定會用同一套友善提示條告知使用者，不需要每一個按鈕各自補寫防呆。
+  // 注意：這是「最後一道防線」，不會取代、也不影響任何功能原本自己的 try/catch 與提示邏輯，
+  // 原本就有妥善處理錯誤的地方（例如AI追問、合盤比對等）完全不受影響、不會出現兩次提示。
+  let _lastGlobalErrToastAt = 0;
+  function _throttledGlobalErrToast(msg){
+    const now = Date.now();
+    if(now - _lastGlobalErrToastAt < 4000) return; // 避免同一瞬間多個錯誤疊加彈出、洗版
+    _lastGlobalErrToastAt = now;
+    showFriendlyError(msg);
+  }
+  window.addEventListener('error', function(e){
+    console.error('[真命盤][全域安全網] 未攔截的錯誤：', e.error || e.message);
+    _throttledGlobalErrToast('這個操作剛才發生了預期外的問題，畫面可能沒有完成更新；可以重新整理頁面後再試一次，若持續發生歡迎透過頁尾聯絡信箱回報。');
+  });
+  window.addEventListener('unhandledrejection', function(e){
+    console.error('[真命盤][全域安全網] 未攔截的非同步錯誤：', e.reason);
+    _throttledGlobalErrToast('這個操作剛才發生了預期外的問題（可能是網路連線或雲端服務暫時無回應）；可以稍後再試一次，若持續發生歡迎透過頁尾聯絡信箱回報。');
+  });
+
+  // ================= v10.3新增：全站按鈕統一「處理中」視覺回饋（缺失②修正的基礎設施） =================
+  // 目的：使用者點擊「主要／小型」按鈕後，不管背後是同步或非同步(fetch/AI呼叫等)運算，
+  // 都能立刻看到「有反應」的觸覺回饋，而不是呆呆等待、以為按鈕壞了。
+  // 做法：用事件代理(delegation)在 document 層級監聽，完全不影響、不取代任何既有的
+  // addEventListener 點擊邏輯（兩者是各自獨立的監聽器，互不干擾、不會重複觸發或攔截）。
+  document.addEventListener('click', function(e){
+    const btn = e.target.closest('button.btn-primary, button.btn-mini, .tab-group-btn, .tab-btn');
+    if(!btn || btn.disabled) return;
+    btn.classList.remove('btn-clicked-pulse');
+    // 強制觸發 reflow 讓動畫可以重新播放（連續快速點擊同一顆按鈕時也看得到回饋）
+    void btn.offsetWidth;
+    btn.classList.add('btn-clicked-pulse');
+    setTimeout(()=>btn.classList.remove('btn-clicked-pulse'), 260);
+  }, true);
+
   // 判斷「西元年/月/日」是否為真實存在的日期（例如 2024-02-30、2023-02-29 這類會被
   // JS Date 物件自動「進位」成隔天，而非直接報錯的無效日期，屬於容易被忽略的邊界情境）。
   const BIRTH_YEAR_MIN = 1902, BIRTH_YEAR_MAX = 2097;
@@ -4077,6 +4157,24 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       return {ok:false, message:`${who}出生年份需介於西元 ${BIRTH_YEAR_MIN}～${BIRTH_YEAR_MAX} 年之間，目前輸入的年份（${y}）超出系統萬年曆與節氣資料庫的可靠計算範圍。`};
     }
     return {ok:true, y, m, d};
+  }
+
+  // v10.6新增（缺失⑦修正）：驗證「起算日期／預產期」這類必須是「今天或未來」的日期欄位——
+  // 擇日Copilot、企業擇日、剖腹擇日都是「從這個日期開始往後找好日子」的邏輯，若選到過去的日期，
+  // 系統會照常算出一串看似正常、實則已經失去意義的「建議日期」，卻沒有任何提示告知使用者，
+  // 這裡統一補上檢查，供三處共用，確保錯誤訊息與判斷邏輯一致。
+  function validateNotPastDate(dateVal, opts){
+    opts = opts || {};
+    const who = opts.who || '';
+    const base = validateDateInput(dateVal, {who});
+    if(!base.ok) return base;
+    const today = todayInfo();
+    const selectedMs = Date.UTC(base.y, base.m-1, base.d);
+    const todayMs = Date.UTC(today.y, today.m-1, today.d);
+    if(selectedMs < todayMs){
+      return {ok:false, message:`${who}日期不能早於今天（今天是 ${today.y}-${String(today.m).padStart(2,'0')}-${String(today.d).padStart(2,'0')}），因為本功能是從這個日期開始往後篩選合適的日子，選擇過去的日期會導致篩選結果失去參考意義，請重新選擇今天或未來的日期。`};
+    }
+    return base;
   }
 
   // v5.6新增：本機儲存輕量混淆（XOR＋隨機裝置金鑰＋Base64）。
@@ -4349,7 +4447,18 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     document.querySelectorAll('.tab-group-panel').forEach(p=>{
       p.classList.toggle('active', p.dataset.group === groupKey);
     });
+    // v10.3新增（缺失③修正）：把目前作用中的分類寫到 <body data-active-group="...">，
+    // 純粹是CSS掛勾用的標記，不影響任何運算或資料，讓每個模組能有自己的識別主色，
+    // 使用者一眼就能從配色分辨「我現在在哪一個功能區」，不用只靠看文字標題。
+    document.body.dataset.activeGroup = groupKey;
   }
+  // v10.4新增（缺失①修正）：命盤報告中心的5個分頁（綜合運勢報告／AI白話追問／命盤解析報告／
+  // 命盤時間軸／準確度回饋與回測），本質上都是「同一份命盤結果」的不同呈現方式，
+  // 過去要點5次分頁才能拼湊出完整資訊；這裡改為只要點其中任何一個，就把這5個區塊「合併顯示成同一頁」
+  // （垂直排列、可一路捲動看完），並自動捲動到你點的那一段。
+  // 注意：這裡完全沒有更動 renderReport／renderAIQATab／renderPoster／renderTimeline／renderFeedbackStats
+  // 這5個渲染函式本身，也沒有更動它們各自的 panel-* 內容容器，只是改變「同時顯示幾個」的邏輯。
+  const REPORT_MERGED_TABS = ['report','aiqa','poster','timeline','feedback'];
   function activateTab(btn, opts){
     opts = opts || {};
     document.querySelectorAll('.tab-btn').forEach(b=>{
@@ -4357,7 +4466,20 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       b.setAttribute('aria-selected','false');
       b.tabIndex = -1;
     });
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    const isReportMerged = REPORT_MERGED_TABS.includes(btn.dataset.tab);
+    if(isReportMerged){
+      // 報告中心：把「非報告中心」的分頁隱藏，但5個報告分頁全部保留顯示（合併頁效果）
+      document.querySelectorAll('.tab-panel').forEach(p=>{
+        const key = p.id.replace(/^panel-/, '');
+        p.classList.toggle('active', REPORT_MERGED_TABS.includes(key));
+      });
+      document.querySelectorAll('.report-section-label').forEach(lbl=>{
+        lbl.classList.toggle('active', REPORT_MERGED_TABS.includes(lbl.dataset.reportLabel));
+      });
+    }else{
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      document.querySelectorAll('.report-section-label').forEach(lbl=>lbl.classList.remove('active'));
+    }
     btn.classList.add('active');
     btn.setAttribute('aria-selected','true');
     btn.tabIndex = 0;
@@ -4365,7 +4487,13 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const panel = document.getElementById('panel-'+btn.dataset.tab);
     if(panel) panel.classList.add('active');
     if(mobileTabSelect) mobileTabSelect.value = btn.dataset.tab;
-    if(lastCtx) renderTabSafely(btn.dataset.tab, lastCtx); // v8.2：頁籤延遲渲染，切換到哪一頁才計算哪一頁
+    if(isReportMerged){
+      // 合併頁：5段內容都要渲染（renderTabSafely本身有防重複渲染機制，重複呼叫不會造成內容重複或效能問題）
+      if(lastCtx) REPORT_MERGED_TABS.forEach(k=>renderTabSafely(k, lastCtx));
+      if(panel && !opts.skipScroll && typeof panel.scrollIntoView === 'function'){ panel.scrollIntoView({behavior:'smooth', block:'start'}); }
+    }else{
+      if(lastCtx) renderTabSafely(btn.dataset.tab, lastCtx); // v8.2：頁籤延遲渲染，切換到哪一頁才計算哪一頁
+    }
     if(opts.focus) btn.focus();
   }
   const mobileTabSelect = document.getElementById('tabMobileSelect');
@@ -4447,7 +4575,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
 
   // 各頁籤延遲渲染的實際呼叫方式（函式本身在下方定義，因使用 function 宣告故已整體提升，此處註冊時機沒有問題）
   registerTabRenderer('bazi',    ctx=>renderBazi(ctx.bazi, ctx.wuxing, ctx.shishen, ctx.dayun, ctx.p.gender, ctx.p));
-  registerTabRenderer('ziwei',   ctx=>renderZiwei(ctx.ziwei, ctx.p.unknownHour, ctx.p.gender, ctx.dayun, ctx.p.y));
+  registerTabRenderer('ziwei',   ctx=>renderZiwei(ctx.ziwei, ctx.p.unknownHour, ctx.p.gender, ctx.dayun, ctx.p));
   registerTabRenderer('astro',   ctx=>renderAstro(ctx.astro, ctx.ascendant, ctx.p.unknownHour));
   registerTabRenderer('name',    ctx=>renderName(ctx.name, ctx.p.surname, ctx.p.givenName, ctx.wuxing, ctx.bazi));
   registerTabRenderer('yijing',  ctx=>renderYijing(ctx));
@@ -4467,6 +4595,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   registerTabRenderer('bizzeri', ctx=>renderBizZeriTab(ctx));
   registerTabRenderer('actionplan',ctx=>renderActionPlanTab(ctx));
   registerTabRenderer('marketing',ctx=>renderMarketingTab(ctx));
+  registerTabRenderer('bizplan',ctx=>renderBizPlanTab(ctx));
   registerTabRenderer('palmface',ctx=>renderPalmFaceTab(ctx));
   registerTabRenderer('hourcalib',ctx=>renderHourCalibTab(ctx));
   registerTabRenderer('poster',  ctx=>renderPoster(ctx));
@@ -4527,10 +4656,47 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   const SAVE_KEY = 'zmp_saved_charts_v1';
   const SAVE_KEY_TS = SAVE_KEY + '_updatedAt';
   const CHART_SYNC_KEY = 'savedCharts';
+  // v10.5新增（缺失②修正）：刪除紀錄「墓碑」清單——記錄「這個id已經被刪除過」，
+  // 讓多裝置合併時，就算某裝置的舊清單裡還留著這筆資料，也知道該把它排除、不要復活。
+  const DELETED_KEY = 'zmp_saved_charts_deleted_v1';
+  const DELETED_MAX = 200;
 
   function getSavedCharts(){
     try{ const arr = JSON.parse(Obfuscate.decode(localStorage.getItem(SAVE_KEY))||'[]'); return Array.isArray(arr)?arr:[]; }
     catch(e){ return []; }
+  }
+  function getDeletedChartIds(){
+    try{ const arr = JSON.parse(localStorage.getItem(DELETED_KEY)||'[]'); return Array.isArray(arr)?arr:[]; }
+    catch(e){ return []; }
+  }
+  function addDeletedChartId(id){
+    const arr = getDeletedChartIds();
+    if(!arr.includes(id)){
+      arr.push(id);
+      while(arr.length > DELETED_MAX) arr.shift();
+      try{ localStorage.setItem(DELETED_KEY, JSON.stringify(arr)); }
+      catch(e){ /* 空間不足時不影響本次刪除，僅這筆刪除紀錄可能無法同步到其他裝置 */ }
+    }
+  }
+  function mergeDeletedIdsIntoLocal(remoteDeletedIds){
+    if(!Array.isArray(remoteDeletedIds) || !remoteDeletedIds.length) return getDeletedChartIds();
+    const merged = Array.from(new Set([...getDeletedChartIds(), ...remoteDeletedIds]));
+    while(merged.length > DELETED_MAX) merged.shift();
+    try{ localStorage.setItem(DELETED_KEY, JSON.stringify(merged)); }catch(e){}
+    return merged;
+  }
+  // v10.5新增（缺失②修正）：以「每一筆命盤自己的id」做聯集合併，取代原本「整包依時間戳記二選一覆蓋」
+  // 的同步策略——原本的策略在雙裝置/多分頁情境下，較新的一份會把另一份「整包蓋掉」，
+  // 導致其中一邊剛新增的命盤被永久、靜默地弄丟；改成逐筆聯集後，兩邊各自新增的資料都會保留，
+  // 只有真的被明確刪除過（即在deletedIds「墓碑」名單裡）的id才會被排除，不會因合併而復活。
+  function mergeSavedCharts(localList, remoteList, deletedIds){
+    const deletedSet = new Set(deletedIds||[]);
+    const byId = new Map();
+    [...(remoteList||[]), ...(localList||[])].forEach(item=>{
+      if(!item || !item.id || deletedSet.has(item.id)) return;
+      if(!byId.has(item.id)) byId.set(item.id, item);
+    });
+    return Array.from(byId.values()).sort((a,b)=> new Date(b.savedAt||0) - new Date(a.savedAt||0));
   }
   // 只更新本機快取，不會再推回雲端（雲端同步下來的資料用這個寫回本機，避免無限迴圈）
   function setSavedChartsLocalOnly(list, updatedAt){
@@ -4540,14 +4706,29 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     }catch(e){ /* 本機空間不足時忽略，雲端資料仍會顯示 */ }
   }
   // 一般存檔用這個：先寫本機（不會卡使用者），再非同步推上雲端
+  // v10.5修正（缺失②）：推上雲端前，先向雲端抓一次「目前最新狀態」做合併，而不是把本機這份
+  // 直接naive覆蓋上去——避免這個函式（新增/刪除命盤時都會呼叫）跟「登入時的整體同步」
+  // 兩條路徑同時各自推送、彼此賽跑，導致其中一邊剛做的異動被另一邊蓋掉（原本的臭蟲成因）。
+  // 現在無論是新增、刪除、或登入時的整體同步，最終都會走到同一套合併邏輯，只有一條寫入雲端的路徑。
   function setSavedCharts(list){
     const ts = Date.now();
     try{ localStorage.setItem(SAVE_KEY, Obfuscate.encode(JSON.stringify(list))); localStorage.setItem(SAVE_KEY_TS, String(ts)); }
-    catch(e){ alert('儲存失敗，可能是瀏覽器儲存空間已滿，或目前處於無痕模式導致無法使用本機儲存。'); return; }
+    catch(e){ showFriendlyError('儲存失敗，可能是瀏覽器儲存空間已滿，或目前處於無痕模式導致無法使用本機儲存。'); return; }
     setChartSyncBadge('syncing');
-    zmpServerStorageSet(CHART_SYNC_KEY, { list: list, updatedAt: ts }).then(function(ok){
+    (async ()=>{
+      const remote = await zmpServerStorageGet(CHART_SYNC_KEY);
+      const remoteList = (remote && Array.isArray(remote.list)) ? remote.list : [];
+      const remoteDeletedIds = (remote && Array.isArray(remote.deletedIds)) ? remote.deletedIds : [];
+      const mergedDeletedIds = mergeDeletedIdsIntoLocal(remoteDeletedIds);
+      const mergedList = mergeSavedCharts(list, remoteList, mergedDeletedIds);
+      if(JSON.stringify(mergedList) !== JSON.stringify(list)){
+        // 雲端上有本機還不知道的其他裝置異動：把合併結果寫回本機，畫面呈現最終完整清單
+        setSavedChartsLocalOnly(mergedList, Date.now());
+        renderSavedCharts();
+      }
+      const ok = await zmpServerStorageSet(CHART_SYNC_KEY, { list: mergedList, deletedIds: mergedDeletedIds, updatedAt: Date.now() });
       setChartSyncBadge(ok ? 'synced' : 'error');
-    });
+    })();
   }
 
   // ---- 雲端讀寫共用小工具（透過 /.netlify/functions/data，需登入）----
@@ -4588,30 +4769,34 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     el.textContent = text;
     el.setAttribute('style', 'font-size:12px;color:var(--paper-dim,#6b7280);' + style);
   }
-  // 登入後執行一次：比較本機與雲端誰比較新，用比較新的那份為準，讓多裝置資料收斂一致
+  // v10.5修正（缺失②）：登入後執行一次——不再是「比較新舊、二選一整包覆蓋」，
+  // 而是把本機與雲端的命盤清單、刪除墓碑清單都逐筆合併，合併結果同時寫回本機與雲端，
+  // 確保兩個裝置各自新增的命盤都不會遺失，且已刪除的項目不會因合併而復活。
   async function syncSavedChartsFromServer(){
     setChartSyncBadge('syncing');
     const remote = await zmpServerStorageGet(CHART_SYNC_KEY);
     const localList = getSavedCharts();
-    const localTs = Number(localStorage.getItem(SAVE_KEY_TS) || 0);
+    const remoteList = (remote && Array.isArray(remote.list)) ? remote.list : [];
+    const remoteDeletedIds = (remote && Array.isArray(remote.deletedIds)) ? remote.deletedIds : [];
 
-    if(remote && Array.isArray(remote.list)){
-      if((remote.updatedAt||0) >= localTs){
-        // 雲端資料較新（或本機從沒同步過）：用雲端覆蓋本機顯示
-        setSavedChartsLocalOnly(remote.list, remote.updatedAt || Date.now());
-      } else {
-        // 本機比雲端新（例如剛剛離線存檔）：把本機推回雲端
-        await zmpServerStorageSet(CHART_SYNC_KEY, { list: localList, updatedAt: localTs });
-      }
-    } else if(localList.length){
-      // 雲端還沒有資料，但本機已有舊資料：第一次同步，把本機資料上傳
-      const ts = localTs || Date.now();
-      setSavedChartsLocalOnly(localList, ts);
-      await zmpServerStorageSet(CHART_SYNC_KEY, { list: localList, updatedAt: ts });
+    const mergedDeletedIds = mergeDeletedIdsIntoLocal(remoteDeletedIds);
+    const mergedList = mergeSavedCharts(localList, remoteList, mergedDeletedIds);
+
+    const listChanged = JSON.stringify(mergedList) !== JSON.stringify(localList);
+    const cloudNeedsUpdate = !remote || JSON.stringify(remoteList) !== JSON.stringify(mergedList)
+      || JSON.stringify(remoteDeletedIds) !== JSON.stringify(mergedDeletedIds);
+
+    const ts = Date.now();
+    if(listChanged || !remote){ setSavedChartsLocalOnly(mergedList, ts); }
+    if(cloudNeedsUpdate){
+      await zmpServerStorageSet(CHART_SYNC_KEY, { list: mergedList, deletedIds: mergedDeletedIds, updatedAt: ts });
     }
     setChartSyncBadge('synced');
     renderSavedCharts();
   }
+  window.__zmpSyncSavedCharts = syncSavedChartsFromServer; // 供自動化測試/除錯手動觸發同步用，不影響正常流程
+  window.__zmpGetSavedCharts = getSavedCharts; // 同上，供測試讀取目前清單
+  window.__zmpDeleteSavedChart = deleteSavedChart; // 同上，供測試模擬刪除操作
   function initChartCloudSync(){
     if(window.netlifyIdentity && netlifyIdentity.currentUser()){
       syncSavedChartsFromServer();
@@ -4670,11 +4855,12 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   }
   function deleteSavedChart(id){
     if(!confirm('確定要刪除這筆已存命盤嗎？此動作無法復原。')) return;
+    addDeletedChartId(id); // v10.5新增（缺失②修正）：記錄刪除墓碑，避免多裝置合併同步時這筆資料「復活」
     setSavedCharts(getSavedCharts().filter(x=>x.id!==id));
     renderSavedCharts();
   }
   function saveCurrentChart(){
-    if(!lastCtx){ alert('請先完成排盤，才能儲存命盤。'); return; }
+    if(!lastCtx){ showFriendlyError('請先完成排盤，才能儲存命盤。'); return; }
     const p = lastCtx.p;
     const note = prompt('可為此命盤加上備註（例如：客戶編號、關係標籤），留空可略過：','') || '';
     const list = getSavedCharts();
@@ -4689,12 +4875,12 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     if(list.length>50) list.length = 50;
     setSavedCharts(list);
     renderSavedCharts();
-    alert('已儲存到本機命盤存摺！');
+    showFriendlyError('已儲存到本機命盤存摺！', {type:'success'});
   }
   document.getElementById('saveChartBtn')?.addEventListener('click', saveCurrentChart);
   document.getElementById('exportChartsBtn')?.addEventListener('click', ()=>{
     const list = getSavedCharts();
-    if(list.length===0){ alert('目前存摺中沒有資料可匯出。'); return; }
+    if(list.length===0){ showFriendlyError('目前存摺中沒有資料可匯出。'); return; }
     const data = JSON.stringify(list, null, 2);
     const blob = new Blob([data], {type:'application/json'});
     const url = URL.createObjectURL(blob);
@@ -4714,9 +4900,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         const merged = existing.concat(toAdd);
         setSavedCharts(merged);
         renderSavedCharts();
-        alert(`匯入完成，新增 ${toAdd.length} 筆資料（重複ID已自動略過）。`);
+        showFriendlyError(`匯入完成，新增 ${toAdd.length} 筆資料（重複ID已自動略過）。`, {type:'success'});
       }catch(err){
-        alert('匯入失敗，請確認選擇的檔案是本站匯出的「真命盤_命盤存摺.json」格式。');
+        showFriendlyError('匯入失敗，請確認選擇的檔案是本站匯出的「真命盤_命盤存摺.json」格式。');
       }
       e.target.value = '';
     };
@@ -5352,7 +5538,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const topCatEntry = Object.entries(catSums).sort((a,b)=>b[1]-a[1])[0];
     const catPlain = { guanSha:'責任感強、重紀律，做事有規矩、有分寸', caiXing:'務實精明、重視實際成果，很會運用資源', yinXing:'學習力強、貴人運佳，喜歡吸收知識、依賴前輩指導', shiShang:'創意豐沛、表達力強，點子多、喜歡展現自己', biJie:'重視人脈、行動力強，喜歡合作與朋友互相扶持' };
     const catLabel = { guanSha:'官殺（正官／七殺）', caiXing:'財星（正財／偏財）', yinXing:'印星（正印／偏印）', shiShang:'食傷（食神／傷官）', biJie:'比劫（比肩／劫財）' };
-    const nowAgeForDu = new Date().getFullYear() - p.y;
+    // v10.5修正（缺失④）：改用精確實歲，取代「西曆年直接相減」的粗略算法（見getPreciseAgeInfo說明）。
+    const nowAgeForDu = getPreciseAgeInfo(p).preciseAge;
     const curDu = (dayun.dayunList||[]).find(d=>nowAgeForDu>=parseFloat(d.startAge) && nowAgeForDu<parseFloat(d.endAge)) || dayun.dayunList[dayun.dayunList.length-1];
 
     let html = explainSimple(`
@@ -5507,7 +5694,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     panel.appendChild(el(`<div>${html}</div>`));
   }
 
-  function renderZiwei(ziwei, unknownHour, gender, dayun, birthYear){
+  function renderZiwei(ziwei, unknownHour, gender, dayun, p){
     const panel = document.getElementById('panel-ziwei');
     if(unknownHour || !ziwei){
       panel.innerHTML = `<div class="error-box">紫微斗數的命宮、身宮與十四主星排列需要準確的出生時辰，目前為「時辰未知」模式，暫不提供此項排盤。若能補上出生時間，可獲得完整紫微命盤。</div>`;
@@ -5529,7 +5716,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       const rangeStart = ziwei.ju + i*10;
       daxianSteps.push({ zhi:pz.zhi, palaceName:pz.palaceName, startAge:rangeStart, endAge:rangeStart+9 });
     }
-    const nowAgeForDx = new Date().getFullYear() - birthYear;
+    // v10.5修正（缺失④）：改用精確實歲（已判斷今年生日是否已過），取代「西曆年直接相減」的粗略算法，
+    // 避免在生日還沒到的那段期間，把「目前大限」誤判成提前了一階。
+    const nowAgeForDx = getPreciseAgeInfo(p).preciseAge;
     const curDaxian = daxianSteps.find(d=>nowAgeForDx>=d.startAge && nowAgeForDx<=d.endAge) || daxianSteps[0];
 
     let html = explainSimple(`
@@ -6536,7 +6725,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const isMale = p.gender==='M';
 
     // ---- 未來5年流年關鍵訊號（供感情／事業／財運／健康各領域抓取具體年份，非另編數據，與「流年運勢」頁籤共用同一套排盤與合沖判斷邏輯） ----
-    const nowYearNum = new Date().getFullYear();
+    // v10.5修正（缺失⑤）：改用台灣時區的今天判斷「今年」，取代裝置本地時區（見todayInfo()說明）。
+    const nowYearNum = todayInfo().y;
     const natalZhiForFlow = {year:bazi.pillars.year.zhi, month:bazi.pillars.month.zhi, day:dayZhi};
     if(!p.unknownHour && bazi.pillars.hour) natalZhiForFlow.hour = bazi.pillars.hour.zhi;
     const peachZhiForFlow = getPeachZhi(dayZhi);
@@ -6612,7 +6802,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const careerStars = ziweiStarsIn('事業');
     if(careerStars.length) career += ` 事業宮見「${careerStars.join('、')}」，${starTraitText(careerStars)||''}。`;
     if(astro.Sun) career += ` 太陽星座為${astro.Sun.sign}，代表外顯的自我實現方向與${astro.Sun.sign}的特質相關。`;
-    const nowAgeForWork = new Date().getFullYear() - p.y;
+    // v10.5修正（缺失④）：改用精確實歲，取代「西曆年直接相減」的粗略算法（見getPreciseAgeInfo說明）。
+    const nowAgeForWork = getPreciseAgeInfo(p).preciseAge;
     const curDuForWork = (dayun.dayunList||[]).find(d=>nowAgeForWork>=parseFloat(d.startAge) && nowAgeForWork<parseFloat(d.endAge)) || dayun.dayunList[dayun.dayunList.length-1];
     let work = `目前大運為「${curDuForWork?curDuForWork.gan+curDuForWork.zhi:''}」（${curDuForWork?curDuForWork.startAge+'~'+curDuForWork.endAge+'歲':''}），`;
     work += biJie>=3 ? '比劫力量偏旺，適合團隊合作或與人共事的工作型態，但也要留意競爭與人際消耗。' : '整體格局中比劫不算突出，較適合發揮個人專業或獨立作業的工作模式。';
@@ -6810,6 +7001,13 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
 
     let html = `<p style="color:var(--paper-dim);font-size:14px;line-height:1.8;margin:0 0 20px;">以下內容依你的八字十神、紫微斗數宮位星曜、西洋占星行星星座及真實流年干支綜合演算，針對感情婚姻、事業工作、財運投資、家庭子女、重大人生抉擇、健康與流年運勢逐項給出「原因」與「具體建議」，力求明確、可執行，而非空泛的吉凶用語。</p>`;
 
+    // v10.6新增（缺失⑧修正）：時辰未知時，系統會以中午12:00代入計算時柱，這也會連帶影響本頁「命盤五行分布」
+    // 統計中時柱的五行貢獻度；同一份報告群組裡的「命盤解析報告」「命盤時間軸」都有明確提示這件事，
+    // 這裡補上一致的警示，避免使用者在完全沒有提示的情況下，誤以為這份最主要的綜合報告是以真實時辰算出。
+    if(p.unknownHour){
+      html += `<div class="error-box" style="margin-bottom:20px;">⚠️ 你目前是以「時辰未知」排出這份命盤，系統暫以中午12:00代入計算時柱——這會影響時柱本身、下方「命盤五行分布」統計中時柱的五行占比，以及所有與時柱、命宮相關的解讀段落之準確度。若能補齊準確出生時間並重新排盤，這份報告會更貼近你的真實命盤。</div>`;
+    }
+
     const consistencyNotes = buildConsistencyCheck(stats);
     html += `<div class="card" style="margin-bottom:20px;border-color:var(--gold-soft);">
       <h3 style="margin:0 0 10px;font-size:15px;color:var(--gold-soft);">🔎 跨面向一致性檢查（未來5年）</h3>
@@ -6897,7 +7095,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const total = Object.values(wuxing).reduce((a,b)=>a+b,0)||1;
     const wxSorted = Object.entries(wuxing).sort((a,b)=>b[1]-a[1]);
     const curDu = (dayun.dayunList||[]).find(d=>{
-      const nowAge = new Date().getFullYear() - p.y;
+      // v10.5修正（缺失④）：改用精確實歲，取代「西曆年直接相減」的粗略算法（見getPreciseAgeInfo說明）。
+      const nowAge = getPreciseAgeInfo(p).preciseAge;
       return nowAge>=parseFloat(d.startAge) && nowAge<parseFloat(d.endAge);
     });
     const sunSign = astro.Sun ? astro.Sun.sign : '未知（時辰未知）';
@@ -7037,10 +7236,10 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       const modelEl = fieldsBox.querySelector('#aiModel');
       const endpointEl = fieldsBox.querySelector('#aiEndpoint');
       const apiKey = keyEl.value.trim();
-      if(!apiKey){ alert(`請先輸入你的 ${cfg.keyLabel}。`); keyEl.focus(); return; }
+      if(!apiKey){ showFriendlyError(`請先輸入你的 ${cfg.keyLabel}。`, {focusEl: keyEl}); return; }
       const model = modelEl ? (modelEl.value.trim() || cfg.defaultModel) : cfg.defaultModel;
       const endpoint = endpointEl ? endpointEl.value.trim() : '';
-      if(cfg.needsEndpoint && !cfg.endpointOptional && !endpoint){ alert('請先輸入 API 端點網址。'); endpointEl.focus(); return; }
+      if(cfg.needsEndpoint && !cfg.endpointOptional && !endpoint){ showFriendlyError('請先輸入 API 端點網址。', {focusEl: endpointEl}); return; }
 
       if(rememberEl.checked){
         localStorage.setItem(cfg.keyStorage, Obfuscate.encode(apiKey));
@@ -7243,7 +7442,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         </div>
         <div class="field"><label>出生日期</label><input type="date" class="tm-date" value="${m.date||''}" ${m.locked?'disabled':''}></div>
         <div class="field"><label>出生時間（未知可留空）</label><input type="time" class="tm-time" value="${m.time||''}" ${m.locked?'disabled':''}></div>
-        ${m.locked ? '' : `<button type="button" class="btn-mini tm-remove" data-idx="${idx}">🗑️ 移除</button>`}
+        ${m.locked ? '' : `<button type="button" class="btn-mini danger tm-remove" data-idx="${idx}">🗑️ 移除</button>`}
       </div>`;
     }
 
@@ -7397,6 +7596,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   function renderBizZeriTab(ctx){
     const panel = document.getElementById('panel-bizzeri');
     if(!panel) return;
+    // v10.6修正（缺失⑦）：補上今天日期，供下方「起算日期」欄位設定預設值與最小可選日期。
+    const today = todayInfo();
+    const defaultDateStr = `${today.y}-${String(today.m).padStart(2,'0')}-${String(today.d).padStart(2,'0')}`;
     panel.innerHTML = '';
 
     const stakeholders = [
@@ -7419,7 +7621,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
             <option value="travel">出行／遠行（出差／考察）</option>
           </select>
         </div>
-        <div class="field"><label for="bizStartDate">起算日期</label><input type="date" id="bizStartDate"></div>
+        <div class="field"><label for="bizStartDate">起算日期</label><input type="date" id="bizStartDate" value="${defaultDateStr}" min="${defaultDateStr}"></div>
         <div class="field"><label for="bizRangeDays">查詢天數</label><input type="number" id="bizRangeDays" value="60" min="7" max="180"></div>
       </div>
       <button type="button" class="btn-primary" id="bizAnalyzeBtn">開始分析共同吉日</button>
@@ -7435,7 +7637,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       return `<div class="team-member-row" data-idx="${idx}">
         <div class="field"><label>姓名／職稱</label><input type="text" class="bz-name" value="${escapeHtml(m.name||'')}" ${m.locked?'readonly':''} placeholder="例：財務長"></div>
         <div class="field"><label>出生日期</label><input type="date" class="bz-date" value="${m.date||''}" ${m.locked?'disabled':''}></div>
-        ${m.locked ? '' : `<button type="button" class="btn-mini bz-remove" data-idx="${idx}">🗑️ 移除</button>`}
+        ${m.locked ? '' : `<button type="button" class="btn-mini danger bz-remove" data-idx="${idx}">🗑️ 移除</button>`}
       </div>`;
     }
     function renderList(){
@@ -7466,7 +7668,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       const eventType = box.querySelector('#bizEventType').value;
       const startVal = box.querySelector('#bizStartDate').value;
       const rangeDays = parseInt(box.querySelector('#bizRangeDays').value,10) || 60;
-      const startCheck = validateDateInput(startVal, {who:'起算'});
+      const startCheck = validateNotPastDate(startVal, {who:'起算'});
       if(!startCheck.ok){ showFriendlyError(startCheck.message); return; }
       const {y:sy, m:sm, d:sd} = startCheck;
 
@@ -7662,6 +7864,115 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     });
   }
 
+  // ============================================================
+  // v10.7新增：④ 企業方案（把「團隊相容性」「企業擇日」包裝成B2B專業服務的介紹＋洽詢頁）
+  // 對應商業方案①：企業用人決策顧問系統。本頁不需另外收費串接金流，先以「留下聯絡方式」
+  // 的洽詢表單（透過 mailto 開啟使用者自己的郵件軟體寄出，不經過我方伺服器）作為第一版，
+  // 待有實際洽詢量後再評估是否要接金流或CRM。
+  // ============================================================
+  function renderBizPlanTab(ctx){
+    const panel = document.getElementById('panel-bizplan');
+    if(!panel) return;
+    panel.innerHTML = '';
+
+    const box = el(`<div class="ai-qa-box">
+      <h3>🏆 企業方案——把「團隊相容性」與「企業擇日」升級成專業版顧問服務</h3>
+      <p class="ai-qa-hint">
+        你剛剛體驗過的「👥 團隊相容性」與「🏢 企業擇日」，除了個人自用，也很適合直接應用在
+        <b style="color:var(--gold-soft);">組建新團隊、招募面試前參考、重大簽約／開幕擇日</b>
+        等企業決策場景。企業方案提供更完整的專業版報告格式與批次分析額度，讓你可以直接把結果
+        用在人資會議、董事會簡報等正式場合。
+      </p>
+
+      <div class="tam-grid" style="margin:20px 0;">
+        <div class="tam-card">
+          <div class="tam-label">單次分析</div>
+          <div class="tam-num">NT$1,999<span style="font-size:13px;color:var(--paper-dim);">／次</span></div>
+          <div class="tam-desc">最多6人團隊相容性矩陣，或一次企業擇日批次分析；輸出可列印的專業版報告（含企業品牌欄位）</div>
+        </div>
+        <div class="tam-card" style="border-color:var(--accent-planmarketing);">
+          <div class="tam-label">企業月訂閱 <span style="color:var(--accent-planmarketing);">熱門</span></div>
+          <div class="tam-num">NT$2,999<span style="font-size:13px;color:var(--paper-dim);">／月</span></div>
+          <div class="tam-desc">當月無限次數使用團隊相容性與企業擇日，適合人資部門常態招募、多場活動擇日需求</div>
+        </div>
+        <div class="tam-card">
+          <div class="tam-label">客製顧問方案</div>
+          <div class="tam-num">洽詢報價</div>
+          <div class="tam-desc">大型企業／連鎖品牌，可另外討論白牌報告、批次匯入現有員工資料、專屬客戶經理等需求</div>
+        </div>
+      </div>
+
+      <p class="field-hint" style="margin:4px 0 18px;">
+        以上為初期定價方案，正式報價請以洽詢後之書面報價單為準；本頁僅供功能介紹與需求登記，尚未串接線上刷卡付款。
+      </p>
+
+      <div class="card" style="margin-top:4px;">
+        <h4 style="margin:0 0 12px;">📮 留下聯絡方式，我們會盡快與您聯繫</h4>
+        <div class="form-grid">
+          <div class="field"><label for="bizPlanCompany">公司／團隊名稱</label><input type="text" id="bizPlanCompany" placeholder="例：○○股份有限公司"></div>
+          <div class="field"><label for="bizPlanContact">聯絡人姓名</label><input type="text" id="bizPlanContact" placeholder="例：陳小姐"></div>
+          <div class="field"><label for="bizPlanEmail">聯絡Email</label><input type="email" id="bizPlanEmail" placeholder="example@company.com"></div>
+          <div class="field"><label for="bizPlanPhone">聯絡電話（選填）</label><input type="tel" id="bizPlanPhone" placeholder="例：0912-345-678"></div>
+          <div class="field full">
+            <label for="bizPlanInterest">有興趣的方案</label>
+            <select id="bizPlanInterest">
+              <option value="單次分析">單次分析（NT$1,999／次）</option>
+              <option value="企業月訂閱">企業月訂閱（NT$2,999／月）</option>
+              <option value="客製顧問方案">客製顧問方案（洽詢報價）</option>
+              <option value="還在了解中">還在了解中，想先問問看</option>
+            </select>
+          </div>
+          <div class="field full"><label for="bizPlanNote">想解決的問題／需求說明（選填）</label><textarea id="bizPlanNote" placeholder="例：我們近期要招募3位業務，想在面試前先做團隊相容性參考"></textarea></div>
+        </div>
+        <button type="button" class="btn-primary" id="bizPlanSubmitBtn" style="margin-top:14px;">📮 送出洽詢</button>
+        <div id="bizPlanResult"></div>
+      </div>
+    </div>`);
+    panel.appendChild(box);
+
+    box.querySelector('#bizPlanSubmitBtn').addEventListener('click', ()=>{
+      const company = box.querySelector('#bizPlanCompany').value.trim();
+      const contact = box.querySelector('#bizPlanContact').value.trim();
+      const email = box.querySelector('#bizPlanEmail').value.trim();
+      const phone = box.querySelector('#bizPlanPhone').value.trim();
+      const interest = box.querySelector('#bizPlanInterest').value;
+      const note = box.querySelector('#bizPlanNote').value.trim();
+      const resultBox = box.querySelector('#bizPlanResult');
+
+      if(!contact || !email){
+        showFriendlyError('請至少填寫聯絡人姓名與Email，方便我們與您聯繫。');
+        return;
+      }
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if(!emailPattern.test(email)){
+        showFriendlyError('Email格式看起來不太正確，請確認後再試一次。');
+        return;
+      }
+
+      const subject = encodeURIComponent(`【企業方案洽詢】${company||'（未填公司名稱）'} - ${interest}`);
+      const bodyLines = [
+        `公司／團隊名稱：${company||'（未填）'}`,
+        `聯絡人：${contact}`,
+        `Email：${email}`,
+        `電話：${phone||'（未填）'}`,
+        `有興趣的方案：${interest}`,
+        `需求說明：${note||'（未填）'}`,
+      ];
+      const body = encodeURIComponent(bodyLines.join('\n'));
+      const mailtoUrl = `mailto:business@zhenmingpan.example.com?subject=${subject}&body=${body}`;
+
+      // v10.7：先以開啟使用者自己的郵件軟體寄出洽詢信作為第一版做法，不會把資料傳到我方伺服器，
+      // 也不需要任何後端串接就能立即使用；未來若要接自己的CRM或後端記錄，可在此處另外呼叫API。
+      window.open(mailtoUrl, '_blank');
+      resultBox.innerHTML = `<div class="panel-error-card" style="border-color:var(--jade-soft);background:rgba(184,146,90,0.08);margin-top:14px;">
+        ✅ 已為您開啟郵件軟體並帶入洽詢內容，請確認後點擊寄送即可。若您的裝置沒有預設郵件軟體，
+        也可以直接複製以下內容，寄到 <b>business@zhenmingpan.example.com</b>：
+        <pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;margin:10px 0 0;">${escapeHtml(bodyLines.join('\n'))}</pre>
+      </div>`;
+      showFriendlyError('已為您開啟郵件軟體，請確認內容後送出。', {type:'success'});
+    });
+  }
+
   function renderPalmFaceTab(ctx){
     const panel = document.getElementById('panel-palmface');
     panel.innerHTML = '';
@@ -7765,7 +8076,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       input.addEventListener('change', async ()=>{
         const file = input.files && input.files[0];
         if(!file) return;
-        if(!file.type.startsWith('image/')){ alert('請選擇圖片檔案'); return; }
+        if(!file.type.startsWith('image/')){ showFriendlyError('請選擇圖片檔案'); return; }
         preview.innerHTML = '<span class="pf-preview-empty">處理中…</span>';
         try{
           const dataUrl = await resizeImageFile(file);
@@ -7858,17 +8169,17 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
 
     submitBtn.addEventListener('click', async ()=>{
       const images = buildImageParts();
-      if(images.length===0){ alert('請至少上傳一張手掌或臉部照片。'); return; }
+      if(images.length===0){ showFriendlyError('請至少上傳一張手掌或臉部照片。'); return; }
       const cfg = AI_PROVIDERS[currentProvider];
       const keyEl = fieldsBox.querySelector('#pfApiKey');
       const rememberEl = fieldsBox.querySelector('#pfKeyRemember');
       const modelEl = fieldsBox.querySelector('#pfModel');
       const endpointEl = fieldsBox.querySelector('#pfEndpoint');
       const apiKey = keyEl.value.trim();
-      if(!apiKey){ alert(`請先輸入你的 ${cfg.keyLabel}。`); keyEl.focus(); return; }
+      if(!apiKey){ showFriendlyError(`請先輸入你的 ${cfg.keyLabel}。`, {focusEl: keyEl}); return; }
       const model = modelEl ? (modelEl.value.trim() || cfg.defaultModel) : cfg.defaultModel;
       const endpoint = endpointEl ? endpointEl.value.trim() : '';
-      if(cfg.needsEndpoint && !cfg.endpointOptional && !endpoint){ alert('請先輸入 API 端點網址。'); endpointEl.focus(); return; }
+      if(cfg.needsEndpoint && !cfg.endpointOptional && !endpoint){ showFriendlyError('請先輸入 API 端點網址。', {focusEl: endpointEl}); return; }
 
       if(rememberEl.checked){
         localStorage.setItem(cfg.keyStorage, Obfuscate.encode(apiKey));
@@ -7995,18 +8306,18 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   }
 
   document.getElementById('compatSubmitBtn')?.addEventListener('click', ()=>{
-    if(!lastCtx){ alert('請先完成上方「輸入出生資料」排出你自己（甲方）的命盤，再進行合盤比對。'); return; }
+    if(!lastCtx){ showFriendlyError('請先完成上方「輸入出生資料」排出你自己（甲方）的命盤，再進行合盤比對。'); return; }
     const cSurname = document.getElementById('cSurname').value.trim() || '乙方';
     const cGivenName = document.getElementById('cGivenName').value.trim();
     const cGender = document.querySelector('input[name=cGender]:checked').value;
     const cDateVal = document.getElementById('cBirthDate').value;
-    if(!cDateVal){ alert('請選擇乙方出生日期'); return; }
+    if(!cDateVal){ showFriendlyError('請選擇乙方出生日期'); return; }
     const cTimeVal = document.getElementById('cBirthTime').value || '12:00';
     const cUnknownHour = document.getElementById('cUnknownHour').checked;
     const cLongitude = parseFloat(document.getElementById('cLongitude').value)||121.5;
     const cLatitude = parseFloat(document.getElementById('cLatitude').value)||25.03;
-    if(isNaN(cLongitude) || Math.abs(cLongitude)>180){ alert('乙方經度數值有誤，請輸入 -180 至 180 之間的數字（東經為正）。'); return; }
-    if(isNaN(cLatitude) || Math.abs(cLatitude)>90){ alert('乙方緯度數值有誤，請輸入 -90 至 90 之間的數字（北緯為正）。'); return; }
+    if(isNaN(cLongitude) || Math.abs(cLongitude)>180){ showFriendlyError('乙方經度數值有誤，請輸入 -180 至 180 之間的數字（東經為正）。'); return; }
+    if(isNaN(cLatitude) || Math.abs(cLatitude)>90){ showFriendlyError('乙方緯度數值有誤，請輸入 -90 至 90 之間的數字（北緯為正）。'); return; }
     const [cy,cm,cd] = cDateVal.split('-').map(Number);
     let [chh,cmm] = cTimeVal.split(':').map(Number);
     if(cUnknownHour){ chh=12; cmm=0; }
@@ -8024,7 +8335,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       });
     }catch(err){
       console.error(err);
-      alert('乙方命盤計算發生錯誤，請確認出生日期是否正確（支援範圍約西元1901~2098年）。');
+      showFriendlyError('乙方命盤計算發生錯誤，請確認出生日期是否正確（支援範圍約西元1901~2098年）。');
     }
   });
 
@@ -8308,7 +8619,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const list = getFeedbackList();
     list.push({ category, label, vote, ts: Date.now() });
     while(list.length > FEEDBACK_MAX) list.shift();
-    try{ localStorage.setItem(FEEDBACK_KEY, JSON.stringify(list)); }catch(e){ /* 儲存空間不足時靜默失敗，不影響主要功能 */ }
+    try{ localStorage.setItem(FEEDBACK_KEY, JSON.stringify(list)); }
+    catch(e){ showFriendlyError('回饋紀錄儲存失敗，可能是瀏覽器儲存空間已滿，或目前處於無痕模式導致無法使用本機儲存。'); }
   }
   function getFeedbackStats(){
     const list = getFeedbackList();
@@ -8373,7 +8685,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     catch(e){ return []; }
   }
   function saveEventLog(list){
-    try{ localStorage.setItem(EVENT_LOG_KEY, JSON.stringify(list)); }catch(e){ /* 儲存空間不足時靜默失敗 */ }
+    try{ localStorage.setItem(EVENT_LOG_KEY, JSON.stringify(list)); }
+    catch(e){ showFriendlyError('事件紀錄儲存失敗，可能是瀏覽器儲存空間已滿，或目前處於無痕模式導致無法使用本機儲存。'); }
   }
   function addLifeEvent(dateStr, categoryId, note){
     const list = getEventLog();
@@ -8393,7 +8706,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     let html = `<table class="data-table"><tr><th>日期</th><th>類型</th><th>備註</th>${opts.deletable?'<th></th>':''}</tr>`;
     events.slice().sort((a,b)=>a.date.localeCompare(b.date)).forEach(ev=>{
       const cat = EVENT_CATEGORY_MAP[ev.category];
-      html += `<tr><td>${escapeHtml(ev.date)}</td><td>${cat?escapeHtml(cat.label):escapeHtml(ev.category)}</td><td>${escapeHtml(ev.note||'—')}</td>${opts.deletable?`<td><button type="button" class="btn-mini event-del-btn" data-id="${ev.id}">刪除</button></td>`:''}</tr>`;
+      html += `<tr><td>${escapeHtml(ev.date)}</td><td>${cat?escapeHtml(cat.label):escapeHtml(ev.category)}</td><td>${escapeHtml(ev.note||'—')}</td>${opts.deletable?`<td><button type="button" class="btn-mini danger event-del-btn" data-id="${ev.id}">刪除</button></td>`:''}</tr>`;
     });
     html += `</table>`;
     return html;
@@ -8424,7 +8737,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       const dateEl = document.getElementById(formId+'_date');
       const catEl = document.getElementById(formId+'_cat');
       const noteEl = document.getElementById(formId+'_note');
-      if(!dateEl.value){ alert('請先選擇事件發生日期。'); return; }
+      if(!dateEl.value){ showFriendlyError('請先選擇事件發生日期。'); return; }
       addLifeEvent(dateEl.value, catEl.value, noteEl.value);
       dateEl.value = ''; noteEl.value = '';
       redraw();
@@ -8525,7 +8838,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
           html += `<tr><td>${escapeHtml(cat)}</td><td style="color:var(--jade-soft);">${s.up}</td><td style="color:var(--crimson-soft);">${s.down}</td><td>${rate}%</td></tr>`;
         });
         html += `</table></div>`;
-        html += `<button type="button" class="btn-mini" id="fbClearBtn" style="margin-top:14px;">清除所有回饋紀錄</button>`;
+        html += `<button type="button" class="btn-mini danger" id="fbClearBtn" style="margin-top:14px;">清除所有回饋紀錄</button>`;
       }
       html += explainDetail(`
         <h5>這個機制目前做到什麼程度？</h5>
@@ -8751,7 +9064,32 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     return tags;
   }
 
-  function todayInfo(){ const n = new Date(); return {y:n.getFullYear(), m:n.getMonth()+1, d:n.getDate()}; }
+  // v10.5修正（缺失⑤）：改用「UTC時間+8小時」推算台灣當地日期，不再直接信任使用者裝置
+  // 自己的本地時區設定——原本的寫法對身處海外時區（僑胞、留學生、出差等）的使用者，
+  // 「今天」可能已經跟台灣實際日期差了一天，導致擇日／農民曆等12處功能誤判日期。
+  // 此寫法無論使用者裝置設定在哪個時區，換算出來的都是台灣（UTC+8）當地的今天。
+  function todayInfo(){ const n = new Date(Date.now() + 8*3600*1000); return {y:n.getUTCFullYear(), m:n.getUTCMonth()+1, d:n.getUTCDate()}; }
+
+  // v10.5新增（缺失①④修正）：統一的「精確年齡」工具，取代全站多處「西曆年直接相減」的粗略算法。
+  //   preciseAge：精確實歲（已正確判斷今年生日是否已過），供「大限／大運目前走到哪個十年階段」
+  //               這類以「距出生精確經過時間」為基準的連續區間比對使用（缺失④）。
+  //   xuSui     ：正確的虛歲——依「今天的農曆年」與「出生的農曆年」相減再+1計算，
+  //               而非原本直接用西曆1/1當作換歲基準點（缺失①），與本站文件所述定義一致。
+  //   若萬一超出萬年曆資料涵蓋範圍導致農曆換算失敗，退回舊版簡化算法，確保功能不會整個掛掉。
+  function getPreciseAgeInfo(p){
+    const t = todayInfo();
+    const birthdayPassed = (t.m > p.m) || (t.m === p.m && t.d >= p.d);
+    const preciseAge = t.y - p.y - (birthdayPassed ? 0 : 1);
+    let xuSui;
+    try{
+      const todayLunarYear = L.solarToLunar(t.y, t.m, t.d, 8).lunarYear;
+      const birthLunarYear = L.solarToLunar(p.y, p.m, p.d, 8).lunarYear;
+      xuSui = todayLunarYear - birthLunarYear + 1;
+    }catch(e){
+      xuSui = t.y - p.y + 1; // 退回舊版簡化算法（極端邊界防呆）
+    }
+    return { preciseAge, xuSui, birthdayPassed };
+  }
 
   function renderLiuyue(ctx){
     const {p, bazi} = ctx;
@@ -8971,7 +9309,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     catch(e){ return []; }
   }
   function saveTodoList(list){
-    try{ localStorage.setItem(TODO_KEY, JSON.stringify(list)); }catch(e){ /* 儲存空間不足時靜默失敗 */ }
+    try{ localStorage.setItem(TODO_KEY, JSON.stringify(list)); }
+    catch(e){ showFriendlyError('待辦事項儲存失敗，可能是瀏覽器儲存空間已滿，或目前處於無痕模式導致無法使用本機儲存。'); }
   }
   function addTodo(year, month, text){
     const list = getTodoList();
@@ -9040,7 +9379,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
             ${monthTodos.map(t=>`<div class="todo-item" data-id="${t.id}" style="display:flex;align-items:center;gap:8px;padding:4px 0;">
               <input type="checkbox" class="todo-check" ${t.done?'checked':''}>
               <span style="flex:1;font-size:14px;${t.done?'text-decoration:line-through;color:var(--paper-dim);':''}">${escapeHtml(t.text)}</span>
-              <button type="button" class="todo-del btn-mini" style="padding:2px 8px;">✕</button>
+              <button type="button" class="todo-del btn-mini danger" style="padding:2px 8px;">✕</button>
             </div>`).join('')}
           </div>
           <div style="display:flex;gap:6px;margin-top:8px;">
@@ -9368,8 +9707,10 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const eventType = document.getElementById('zeriEventType').value;
     const startVal = document.getElementById('zeriStartDate').value;
     const rangeDays = parseInt(document.getElementById('zeriRangeDays').value, 10) || 60;
-    if(!startVal){ resultBox.innerHTML = `<div class="error-box">請先選擇起算日期。</div>`; return; }
-    const [sy, sm, sd] = startVal.split('-').map(Number);
+    // v10.6修正（缺失⑦）：起算日期不可早於今天，否則系統會照常算出一串已經過去、失去參考意義的「建議日期」。
+    const startCheck = validateNotPastDate(startVal, {who:'起算'});
+    if(!startCheck.ok){ resultBox.innerHTML = `<div class="error-box">${startCheck.message}</div>`; return; }
+    const [sy, sm, sd] = [startCheck.y, startCheck.m, startCheck.d];
     const dayGan = bazi.pillars.day.gan;
     const dayZhi = bazi.pillars.day.zhi;
     const weakWx = wuxingDominant(wuxing).weakest[0];
@@ -10138,7 +10479,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       <div class="compat-intro">依你（母親）命盤日主生肖、日柱，疊加通書建除十二神，為預產期前後區間內的每一天評分，並針對評分較佳的日子逐一模擬十二時辰內寶寶出生時的假想四柱五行分布（是否五行齊全、不過度偏枯），供你與醫師討論排程時的參考方向；醫療安全與母嬰健康務必以主治醫師專業評估為最優先考量，本功能僅為傳統擇日習俗之規則化參考，並非醫療建議。</div>
       <div class="card" id="csectionFormCard">
         <div class="form-grid">
-          <div class="field"><label for="csDueDate">預產期</label><input type="date" id="csDueDate" value="${defaultDateStr}"></div>
+          <div class="field"><label for="csDueDate">預產期</label><input type="date" id="csDueDate" value="${defaultDateStr}" min="${defaultDateStr}"></div>
           <div class="field"><label for="csDaysBefore">預產期前幾天開始查詢</label>
             <select id="csDaysBefore">
               <option value="7">7天</option><option value="14" selected>14天</option><option value="21">21天</option>
@@ -10160,10 +10501,12 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     function runCsection(){
       const resultBox = document.getElementById('csResult');
       const dueVal = document.getElementById('csDueDate').value;
-      if(!dueVal){ resultBox.innerHTML = `<div class="error-box">請先選擇預產期。</div>`; return; }
+      // v10.6修正（缺失⑦）：預產期不可早於今天，避免用已經過去的預產期算出一串失去時效性的建議日期。
+      const dueCheck = validateNotPastDate(dueVal, {who:'預產期'});
+      if(!dueCheck.ok){ resultBox.innerHTML = `<div class="error-box">${dueCheck.message}</div>`; return; }
       const before = parseInt(document.getElementById('csDaysBefore').value, 10);
       const after = parseInt(document.getElementById('csDaysAfter').value, 10);
-      const [dy, dm, dd] = dueVal.split('-').map(Number);
+      const [dy, dm, dd] = [dueCheck.y, dueCheck.m, dueCheck.d];
       const startMs = Date.UTC(dy, dm-1, dd) - before*86400000;
       const totalDays = before + after + 1;
       const endDt0 = new Date(startMs + (totalDays+2)*86400000);
@@ -10456,7 +10799,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
               </optgroup>
             </select>
           </div>
-          <div class="field"><label for="zeriStartDate">起算日期</label><input type="date" id="zeriStartDate" value="${defaultDateStr}"></div>
+          <div class="field"><label for="zeriStartDate">起算日期</label><input type="date" id="zeriStartDate" value="${defaultDateStr}" min="${defaultDateStr}"></div>
           <div class="field"><label for="zeriRangeDays">查詢區間</label>
             <select id="zeriRangeDays">
               <option value="30">未來30天</option>
@@ -10709,8 +11052,13 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const dom = stats.dom;
     const total = Object.values(wuxing).reduce((a,b)=>a+b,0) || 1;
     const zodiac = ZHI_ZODIAC[bazi.pillars.year.zhi] || '';
-    const nowYear = new Date().getFullYear();
-    const xuSui = nowYear - p.y + 1; // 虛歲
+    // v10.5修正（缺失①⑤）：nowYear改用台灣時區的「今天」（todayInfo()），
+    // 不再受使用者裝置本地時區影響；xuSui改用正確的虛歲算法（依農曆新年是否已過判斷），
+    // 取代原本「西曆1/1直接跳號」與本站文件所述定義不一致的簡化算法
+    // （見todayInfo()／getPreciseAgeInfo()說明）。
+    const __todayForPoster = todayInfo();
+    const nowYear = __todayForPoster.y;
+    const xuSui = getPreciseAgeInfo(p).xuSui;
     const sunSign = astro.Sun ? astro.Sun.sign : '（時辰未知，無法精算太陽星座）';
     const catType = dominantShishenCategory(stats);
     const typeInfo = SHISHEN_CAT_TYPE[catType];
@@ -10768,7 +11116,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     }
     const past3 = [];
     for(let i=2;i>=0;i--){
-      const d = new Date(Date.UTC(nowYear, new Date().getMonth()-i, 1));
+      // v10.5修正（缺失⑤）：月份也改用台灣時區的今天，與nowYear基準一致，避免年/月分別取自不同時區來源。
+      const d = new Date(Date.UTC(nowYear, __todayForPoster.m-1-i, 1));
       const y = d.getUTCFullYear(), m = d.getUTCMonth()+1;
       let mShishen = '日主', mGz = '';
       try{
@@ -10782,7 +11131,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const past3Range = past3.length ? `${past3[0].y}年${past3[0].m}月～${past3[past3.length-1].y}年${past3[past3.length-1].m}月` : '';
 
     // ---- 04 未來大運課題：取真實目前大運 ----
-    const nowAgeForPoster = new Date().getFullYear() - p.y;
+    // v10.5修正（缺失④）：改用精確實歲，取代「西曆年直接相減」的粗略算法（見getPreciseAgeInfo說明）。
+    const nowAgeForPoster = getPreciseAgeInfo(p).preciseAge;
     const curDayun = (ctx.dayun.dayunList||[]).find(d=>nowAgeForPoster>=parseFloat(d.startAge) && nowAgeForPoster<parseFloat(d.endAge)) || ctx.dayun.dayunList[ctx.dayun.dayunList.length-1];
     let dayunTheme = '穩健發展、按部就班';
     let dayunAdvice = '此階段適合累積實力、穩紮穩打。';
@@ -11011,7 +11361,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         link.click();
       }catch(err){
         console.error(err);
-        alert('存成圖片失敗，可能是網路無法連線至圖片產生元件（html2canvas），請改用「列印／另存PDF」功能，或檢查網路連線後重試。');
+        showFriendlyError('存成圖片失敗，可能是網路無法連線至圖片產生元件（html2canvas），請改用「列印／另存PDF」功能，或檢查網路連線後重試。');
       }finally{
         imageBtn.disabled = false; imageBtn.textContent = origText;
       }
@@ -11101,7 +11451,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         link.click();
       }catch(err){
         console.error(err);
-        alert('產生分享小卡時發生錯誤，可改用上方「存成圖片」或「列印／另存PDF」功能。');
+        showFriendlyError('產生分享小卡時發生錯誤，可改用上方「存成圖片」或「列印／另存PDF」功能。');
       }
     });
   }
