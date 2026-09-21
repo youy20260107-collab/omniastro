@@ -72,7 +72,7 @@
   //    否則任何人都能不登入直接使用整個網站（包含雲端命盤存摺等需要帳號的功能會停用，
   //    因為沒有真實登入身分，但排盤、報告等主要功能都能正常使用不受影響）。
   // ============================================================================
-  var TEMP_DISABLE_LOGIN = false; // ← 測試完後改回 false 以恢復登入驗證
+  var TEMP_DISABLE_LOGIN = false; // ← 已恢復 Google 帳號登入驗證
   if (TEMP_DISABLE_LOGIN) {
     console.warn('[五象 FiveLens登入] ⚠️ 目前處於「暫時關閉登入」測試模式，任何人不用登入即可使用網站。測試完成後記得把 TEMP_DISABLE_LOGIN 改回 false。');
     hideGate({ email: '（測試模式・未登入）' });
