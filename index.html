@@ -1245,9 +1245,13 @@ body.modal-open{overflow:hidden}
     gate.hidden = false;
     document.body.style.overflow = 'hidden';
     userBar.hidden = true;
+    var badge=document.getElementById('auth-status-badge');
+    if(badge) badge.textContent='尚未登入';
   }
   function hideGate(user){
     gate.hidden = true;
+    var badge=document.getElementById('auth-status-badge');
+    if(badge) badge.textContent='已登入';
     document.body.style.overflow = '';
     userBar.hidden = false;
     var label = (user && (user.email || (user.user_metadata && user.user_metadata.full_name))) || '已登入';
@@ -1298,25 +1302,7 @@ body.modal-open{overflow:hidden}
     if (gateNote) gateNote.textContent = msg;
   }
 
-  // ============================================================================
-  // 🔧🔧🔧 暫時關閉 Google 登入（測試用開關）🔧🔧🔧
-  // 使用者要求暫時關閉登入功能以便測試，這裡改成 true 就會跳過登入畫面直接進入網站。
-  // ⚠️ 測試完成後，請務必把下面這行改回 false，才會恢復正常的 Google 登入驗證機制，
-  //    否則任何人都能不登入直接使用整個網站（包含雲端命盤存摺等需要帳號的功能會停用，
-  //    因為沒有真實登入身分，但排盤、報告等主要功能都能正常使用不受影響）。
-  // ============================================================================
-  var TEMP_DISABLE_LOGIN = false; // ← 已恢復 Google 帳號登入驗證
-  if (TEMP_DISABLE_LOGIN) {
-    console.warn('[五象 FiveLens登入] ⚠️ 目前處於「暫時關閉登入」測試模式，任何人不用登入即可使用網站。測試完成後記得把 TEMP_DISABLE_LOGIN 改回 false。');
-    hideGate({ email: '（測試模式・未登入）' });
-    logoutBtn.addEventListener('click', function(){
-      // 測試模式下沒有真正的登入 session，登出按鈕改為「重新顯示登入畫面」方便你自行切換查看效果。
-      showGate();
-    });
-    return; // 略過下方原本的 Netlify Identity 初始化與登入按鈕綁定，兩者互斥、不會同時執行
-  }
-  // ============================================================================
-
+  // Google 帳號登入為正式啟用狀態；不保留繞過登入的測試開關，避免正式部署誤進入未登入模式。
   // 診斷 1：本站是否透過 http(s) 由 Netlify 實際部署後開啟。
   // Netlify Identity 需要真實的 Netlify 網域＋已啟用 Identity 服務才能運作，
   // 直接雙擊本機 HTML 檔案（file:// 開頭）或用尚未部署的網址測試，登入按鈕必定沒有反應。
@@ -1588,7 +1574,7 @@ body.modal-open{overflow:hidden}
 <span class="v-chip">紫微六吉六煞</span>
 </div>
 </div>
-      <span class="test-badge" aria-label="目前為測試模式">測試模式・未登入</span>
+      <span class="test-badge" id="auth-status-badge" aria-live="polite">尚未登入</span>
     </div>
     <button class="nav-menu-btn" id="topNavMenuBtn" type="button" aria-label="開啟導覽選單" aria-expanded="false">☰</button>
   </div>
@@ -11999,11 +11985,23 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     if(key==='features'){openDirectory('features');return}
     if(key==='ai'){openDirectory('ai');return}
     if(key==='guide'){const d=[...document.querySelectorAll('details')].find(x=>x.textContent.includes('演算法與精度說明'));if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}else{$('form-section')?.scrollIntoView({behavior:'smooth',block:'start'});return;}}
-    if(key==='member'){window.showFriendlyError?.('目前為測試模式，Google 登入暫時關閉；會員中心將在恢復登入後啟用。');return}
+    if(key==='member'){
+      var user = window.netlifyIdentity && netlifyIdentity.currentUser && netlifyIdentity.currentUser();
+      if(user){
+        window.showFriendlyError?.('目前已登入：' + (user.email || 'Google 帳號')); 
+      }else if(window.netlifyIdentity){
+        netlifyIdentity.open('login');
+      }else{
+        window.showFriendlyError?.('Google 登入元件尚未載入，請重新整理頁面後再試一次。');
+      }
+      return;
+    }
     if(key==='about'){openAbout();return}
     if(key==='version'){$('versionBadgeBtn')?.click();return}
   }
-  document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();navigate(el.dataset.nav)}));
+  window.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();navigate(el.dataset.nav)}));
+  });
 })();
 </script>
 </body>
