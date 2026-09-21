@@ -1,8 +1,8 @@
 {
   "name": "zhenmingpan",
-  "version": "10.2.0",
+  "version": "10.11.0",
   "private": true,
-  "description": "真命盤 - Netlify 部署套件",
+  "description": "五象 FiveLens - Netlify 部署套件",
   "dependencies": {
     "@netlify/blobs": "*"
   }
