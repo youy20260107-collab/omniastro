@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+<defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eef2fb"/><stop offset="1" stop-color="#f7f3e9"/></linearGradient></defs>
+<rect width="900" height="520" rx="28" fill="url(#b)"/>
+<rect x="90" y="82" width="720" height="350" rx="24" fill="#fff" stroke="#e4e7ec"/>
+<rect x="120" y="112" width="210" height="290" rx="18" fill="#33447a"/>
+<circle cx="175" cy="168" r="30" fill="#b8925a" opacity=".95"/><path d="M165 168h20M175 158v20" stroke="#fff" stroke-width="3"/>
+<text x="220" y="164" fill="#fff" font-family="Noto Sans TC, sans-serif" font-size="20" font-weight="700">AI 智能區</text>
+<text x="150" y="214" fill="#dbe2f4" font-family="Noto Sans TC, sans-serif" font-size="14">自然語言問答</text><text x="150" y="242" fill="#dbe2f4" font-family="Noto Sans TC, sans-serif" font-size="14">命盤解讀</text><text x="150" y="270" fill="#dbe2f4" font-family="Noto Sans TC, sans-serif" font-size="14">年度分析</text><text x="150" y="298" fill="#dbe2f4" font-family="Noto Sans TC, sans-serif" font-size="14">關係分析</text>
+<rect x="360" y="120" width="410" height="76" rx="16" fill="#f5f6f9"/><circle cx="390" cy="158" r="16" fill="#b8925a"/><text x="420" y="154" fill="#33447a" font-family="Noto Sans TC, sans-serif" font-size="16" font-weight="700">把複雜結果說成白話</text><text x="420" y="178" fill="#718096" font-family="Noto Sans TC, sans-serif" font-size="13">用自己的問題理解命盤，不必先懂專業術語。</text>
+<rect x="360" y="216" width="410" height="150" rx="16" fill="#fbfbfc" stroke="#e4e7ec"/><rect x="384" y="242" width="280" height="12" rx="6" fill="#dbe2f4"/><rect x="384" y="270" width="340" height="12" rx="6" fill="#e8edf7"/><rect x="384" y="298" width="250" height="12" rx="6" fill="#e8edf7"/><rect x="384" y="326" width="180" height="12" rx="6" fill="#dbe2f4"/>
+<text x="120" y="465" fill="#718096" font-family="Noto Sans TC, sans-serif" font-size="15">統一設定 · BYOK · 直接連接所選 AI 服務</text>
+</svg>

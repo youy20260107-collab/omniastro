@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+<rect width="900" height="520" rx="28" fill="#f6f7fa"/>
+<g font-family="Noto Sans TC, sans-serif"><text x="62" y="72" fill="#33447a" font-size="28" font-weight="800">28 大功能</text><text x="62" y="102" fill="#718096" font-size="15">從命盤、流年到擇日與合盤，一站式探索</text></g>
+<g fill="#fff" stroke="#e4e7ec"><rect x="62" y="142" width="235" height="116" rx="18"/><rect x="332" y="142" width="235" height="116" rx="18"/><rect x="602" y="142" width="235" height="116" rx="18"/><rect x="62" y="286" width="235" height="116" rx="18"/><rect x="332" y="286" width="235" height="116" rx="18"/><rect x="602" y="286" width="235" height="116" rx="18"/></g>
+<g fill="#33447a" font-family="Noto Sans TC, sans-serif" font-size="17" font-weight="700"><text x="88" y="183">☯ 八字命盤</text><text x="358" y="183">🔯 紫微斗數</text><text x="628" y="183">♈ 西洋占星</text><text x="88" y="327">📅 流年運勢</text><text x="358" y="327">🎯 擇日 Copilot</text><text x="628" y="327">💞 合盤比對</text></g>
+<g fill="#718096" font-family="Noto Sans TC, sans-serif" font-size="13"><text x="88" y="213">四柱與日主結構</text><text x="358" y="213">命宮與十二宮</text><text x="628" y="213">星座與行星</text><text x="88" y="357">年度與流月</text><text x="358" y="357">事件條件與時辰</text><text x="628" y="357">雙人關係比較</text></g>
+<g fill="#b8925a"><circle cx="805" cy="80" r="7"/><circle cx="825" cy="105" r="4"/><circle cx="785" cy="108" r="4"/></g>
+</svg>

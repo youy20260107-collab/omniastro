@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520">
+<defs><radialGradient id="bg" cx="50%" cy="45%"><stop offset="0" stop-color="#f7f4ea"/><stop offset="1" stop-color="#e8edf7"/></radialGradient><filter id="s"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#23345f" flood-opacity=".12"/></filter></defs>
+<rect width="900" height="520" rx="28" fill="url(#bg)"/>
+<g opacity=".9" filter="url(#s)"><circle cx="450" cy="260" r="185" fill="#fff" stroke="#b8925a" stroke-width="3"/><circle cx="450" cy="260" r="135" fill="none" stroke="#33447a" stroke-width="2"/><circle cx="450" cy="260" r="76" fill="none" stroke="#b8925a" stroke-width="2"/></g>
+<g fill="#33447a" font-family="Noto Sans TC, sans-serif" font-size="30" font-weight="700" text-anchor="middle"><text x="450" y="94">子</text><text x="560" y="125">丑</text><text x="635" y="202">寅</text><text x="645" y="305">卯</text><text x="585" y="398">辰</text><text x="450" y="430">巳</text><text x="315" y="398">午</text><text x="255" y="305">未</text><text x="265" y="202">申</text><text x="340" y="125">酉</text></g>
+<g stroke="#b8925a" stroke-width="2" opacity=".65"><path d="M450 75v370M265 260h370M320 130l260 260M580 130L320 390"/></g>
+<g fill="#33447a"><circle cx="450" cy="260" r="8"/><circle cx="450" cy="180" r="6"/><circle cx="520" cy="220" r="5"/><circle cx="505" cy="320" r="6"/></g>
+<g fill="#718096" font-family="Noto Sans TC, sans-serif"><text x="52" y="72" font-size="18">五象 FiveLens</text><text x="52" y="101" font-size="15">命盤視覺化 · 結構化分析</text></g>
+</svg>

@@ -130,6 +130,39 @@ a{color:var(--gold);}
   .hero-text{text-align:center;max-width:100%;}
 }
 
+
+/* v10.13.4：品牌視覺內容層，改用專業照片式視覺素材，提升首頁質感 */
+.visual-showcase{padding:34px 0 18px;}
+.visual-showcase-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:18px;}
+.visual-showcase-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--jade-soft);text-transform:uppercase;margin-bottom:5px;}
+.visual-showcase-head h2{margin:0;color:var(--paper);font-size:clamp(22px,3vw,30px);}
+.visual-showcase-head p{margin:5px 0 0;color:var(--paper-dim);font-size:14px;max-width:1100px;white-space:nowrap;}
+.visual-hero-card{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(360px,1.25fr);gap:22px;align-items:stretch;background:linear-gradient(135deg,#fff,#f6f7fa);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 16px 42px rgba(44,58,104,.10);}
+.visual-hero-copy{padding:34px 30px;display:flex;flex-direction:column;justify-content:center;}
+.visual-hero-copy .eyebrow{margin-bottom:8px;}
+.visual-hero-copy h3{margin:0 0 10px;color:var(--paper);font-size:clamp(24px,3.3vw,36px);line-height:1.25;}
+.visual-hero-copy p{margin:0;color:var(--paper-dim);font-size:15px;}
+.visual-hero-copy .visual-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+.visual-tag{padding:6px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);color:#526078;font-size:13px;}
+.visual-hero-image{min-height:300px;background:#eef1fa;}
+.visual-hero-image img{display:block;width:100%;height:100%;min-height:300px;object-fit:contain;object-position:center;background:#f4f6fb;image-rendering:auto;}
+.visual-card-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px;}
+.visual-card{background:var(--ink-800);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 10px 28px rgba(44,58,104,.07);transition:transform .18s ease,box-shadow .18s ease;}
+.visual-card:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(44,58,104,.12);}.visual-card.is-link{cursor:pointer;text-decoration:none;color:inherit;display:block;}.visual-card.is-link:focus-visible{outline:3px solid rgba(162,123,60,.45);outline-offset:3px;}
+.visual-card img{display:block;width:100%;height:220px;aspect-ratio:16/9;object-fit:cover;background:#f5f6f9;image-rendering:auto;}
+.visual-card-body{padding:15px 16px 17px;}
+.visual-card-body h3{margin:0 0 4px;font-size:17px;color:var(--paper);}
+.visual-card-body p{margin:0;color:var(--paper-dim);font-size:13px;line-height:1.7;}
+@media (max-width:820px){
+  .visual-showcase{padding-top:24px;}
+  .visual-showcase-head{display:block;}
+  .visual-showcase-head p{white-space:normal;max-width:100%;}
+  .visual-hero-card{grid-template-columns:1fr;}
+  .visual-hero-copy{padding:25px 22px;}
+  .visual-hero-image img{min-height:230px;}
+  .visual-card-grid{grid-template-columns:1fr;}
+}
+
 /* ---------- Sections ---------- */
 section{padding:52px 0;}
 .section-head{margin-bottom:28px;}
@@ -1170,6 +1203,87 @@ table.log-table td.email-cell{ white-space:normal; word-break:break-all; }
 .lucidmind-modal .close-btn{appearance:none;border:1px solid #cfd8e6;background:#173b70;color:#fff;border-radius:10px;padding:9px 22px;font:700 14px var(--sans);cursor:pointer}.lucidmind-modal .close-btn:hover{background:#244f8d}
 body.modal-open{overflow:hidden}
 </style>
+
+<style id="fivelens-production-gate-style">
+/* v10.12 Production UX: Profile Gate + real member/admin surfaces */
+.profile-gate-backdrop{position:fixed;inset:0;z-index:13000;background:rgba(8,22,43,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:22px}
+.profile-gate-backdrop[hidden]{display:none!important}
+.profile-gate-window{position:relative;width:min(760px,calc(100vw - 44px));min-width:420px;min-height:420px;max-width:calc(100vw - 24px);max-height:calc(100vh - 44px);resize:both;overflow:auto;background:#fff;color:#23324d;border:1px solid #cbd6e5;border-radius:20px;box-shadow:0 30px 90px rgba(4,18,38,.35);display:flex;flex-direction:column}
+.profile-gate-titlebar{height:58px;flex:0 0 58px;display:flex;align-items:center;justify-content:space-between;padding:0 16px 0 20px;background:#102f5f;color:#fff;cursor:move;user-select:none}
+.profile-gate-titlebar strong{font-size:17px;letter-spacing:.02em}.profile-gate-titlebar small{display:block;color:#d9e5f5;font-size:11px;margin-top:2px}
+.profile-gate-close{width:34px;height:34px;border:1px solid rgba(255,255,255,.3);border-radius:9px;background:rgba(255,255,255,.1);color:#fff;font-size:20px;cursor:pointer}
+.profile-gate-body{padding:24px 26px 18px;overflow:auto}.profile-gate-intro{margin:0 0 18px;color:#5c6b82;line-height:1.7;font-size:14px}
+.profile-progress{height:8px;border-radius:99px;background:#e8edf4;overflow:hidden;margin:8px 0 20px}.profile-progress>span{display:block;height:100%;width:0;background:linear-gradient(90deg,#173b70,#b18a4a);transition:width .25s ease}
+.profile-progress-label{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#68758a}.profile-gate-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.profile-gate-field label{display:block;font-size:13px;font-weight:700;color:#34445f;margin-bottom:6px}.profile-gate-field input,.profile-gate-field select{width:100%;box-sizing:border-box;border:1px solid #ccd6e3;border-radius:10px;background:#fff;color:#1e2d45;padding:11px 12px;font:500 14px var(--sans);outline:none}.profile-gate-field input:focus,.profile-gate-field select:focus{border-color:#557aa9;box-shadow:0 0 0 3px rgba(58,98,148,.12)}.profile-gate-field.full{grid-column:1/-1}.profile-hour-row{display:flex;gap:10px;align-items:center}.profile-hour-row input{flex:1}.profile-hour-row label{margin:0;display:flex;gap:6px;align-items:center;font-weight:600;color:#5b687b;white-space:nowrap}.profile-gate-error{display:none;margin-top:14px;padding:11px 13px;border-radius:10px;background:#fff1f0;border:1px solid #e6b7b3;color:#9d2d27;font-size:13px;line-height:1.6}.profile-gate-actions{display:flex;justify-content:flex-end;gap:10px;padding-top:18px;margin-top:18px;border-top:1px solid #e8edf3}.profile-gate-actions button{border-radius:10px;padding:11px 18px;font:700 14px var(--sans);cursor:pointer}.profile-secondary{background:#fff;border:1px solid #cbd6e5;color:#40516b}.profile-primary{background:#173b70;border:1px solid #173b70;color:#fff}.profile-primary:hover{background:#244f8d}.member-backdrop{position:fixed;inset:0;z-index:12500;background:rgba(8,22,43,.66);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px}.member-backdrop[hidden]{display:none!important}.member-window{width:min(1040px,94vw);max-height:88vh;overflow:auto;background:#f7f9fc;border-radius:22px;box-shadow:0 28px 90px rgba(5,18,38,.34);border:1px solid #d6dfeb}.member-head{padding:22px 24px;background:#102f5f;color:#fff;display:flex;justify-content:space-between;align-items:center}.member-head h2{margin:0;font-size:23px}.member-head p{margin:5px 0 0;color:#dbe6f4;font-size:13px}.member-close{width:38px;height:38px;border:1px solid rgba(255,255,255,.28);background:rgba(255,255,255,.08);color:#fff;border-radius:10px;font-size:22px;cursor:pointer}.member-body{padding:22px}.member-profile-card{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;background:#fff;border:1px solid #dce4ee;border-radius:16px;padding:20px}.member-avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;background:#edf2f8;color:#173b70;font-size:25px}.member-profile-card h3{margin:0;color:#173b70}.member-profile-card p{margin:5px 0;color:#68758a;font-size:13px}.member-status{padding:7px 10px;border-radius:999px;background:#e9f7ef;color:#207044;font-size:12px;font-weight:800}.member-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0}.member-kpi{background:#fff;border:1px solid #dce4ee;border-radius:14px;padding:16px}.member-kpi span{display:block;color:#748197;font-size:12px}.member-kpi strong{display:block;color:#173b70;font-size:26px;margin-top:5px}.member-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}.member-card{background:#fff;border:1px solid #dce4ee;border-radius:14px;padding:18px}.member-card h3{margin:0 0 13px;color:#173b70;font-size:16px}.member-row{display:flex;justify-content:space-between;gap:15px;padding:10px 0;border-bottom:1px solid #edf0f4;font-size:13px}.member-row:last-child{border-bottom:0}.member-row span{color:#718096}.member-row strong{color:#26364f;text-align:right}.member-actions{display:flex;flex-wrap:wrap;gap:8px}.member-actions button{border:1px solid #cbd6e5;background:#fff;color:#2e4669;border-radius:9px;padding:9px 12px;font:700 13px var(--sans);cursor:pointer}.member-actions button:hover{background:#eef3f9}.admin-dash{margin:14px 0;background:#fff;border:1px solid #dce4ee;border-radius:16px;padding:18px}.admin-dash h3{margin:0;color:#173b70}.admin-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}.admin-kpi{border:1px solid #e1e7ef;border-radius:12px;padding:13px;background:#fbfcfe}.admin-kpi span{font-size:12px;color:#758298}.admin-kpi strong{display:block;font-size:23px;color:#173b70;margin-top:3px}.admin-note{font-size:12px;color:#718096;margin-top:10px}
+@media(max-width:760px){.profile-gate-window{min-width:0;width:calc(100vw - 24px);height:calc(100vh - 24px);max-height:none;resize:none;border-radius:16px}.profile-gate-body{padding:18px}.profile-gate-grid{grid-template-columns:1fr}.profile-gate-field.full{grid-column:auto}.member-window{width:96vw}.member-kpis{grid-template-columns:repeat(2,1fr)}.member-grid{grid-template-columns:1fr}.member-profile-card{grid-template-columns:auto 1fr}.member-status{grid-column:2;justify-self:start}.admin-kpis{grid-template-columns:repeat(2,1fr)}}
+</style>
+
+
+<style id="fivelens-ai-unified-style">
+  .fl-ai-modal-backdrop{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:20px;background:rgba(8,18,35,.62);backdrop-filter:blur(10px)}
+  .fl-ai-modal-backdrop[hidden]{display:none}
+  .fl-ai-modal{width:min(720px,96vw);max-height:min(760px,92vh);overflow:auto;border:1px solid rgba(190,158,82,.28);border-radius:24px;background:linear-gradient(145deg,#10233d 0%,#0b192d 62%,#091522 100%);box-shadow:0 30px 90px rgba(0,0,0,.42);color:#f5f7fb}
+  .fl-ai-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 24px;border-bottom:1px solid rgba(255,255,255,.09);position:sticky;top:0;background:rgba(10,24,41,.94);backdrop-filter:blur(12px);z-index:2}
+  .fl-ai-kicker{font-size:12px;letter-spacing:.16em;color:#d8b66a;text-transform:uppercase;margin-bottom:4px}.fl-ai-head h2{margin:0;font-size:24px;line-height:1.25}.fl-ai-head p{margin:5px 0 0;color:#aebdce;font-size:13px}
+  .fl-ai-close{width:38px;height:38px;border:1px solid rgba(255,255,255,.14);border-radius:50%;background:rgba(255,255,255,.05);color:#fff;font-size:24px;cursor:pointer}.fl-ai-close:hover{background:rgba(255,255,255,.11)}
+  .fl-ai-body{padding:24px}.fl-ai-section{padding:18px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:rgba(255,255,255,.035);margin-bottom:14px}.fl-ai-label{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px;font-weight:700;font-size:14px}.fl-ai-label small{font-weight:400;color:#9fb0c3}
+  .fl-ai-providers{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.fl-ai-provider{border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.045);color:#dce6f1;border-radius:12px;padding:11px 8px;cursor:pointer;font-weight:650;min-height:44px}.fl-ai-provider:hover{border-color:rgba(216,182,106,.5)}.fl-ai-provider.active{background:linear-gradient(135deg,#c8a75b,#9e7c35);color:#101827;border-color:#e4c77f;box-shadow:0 8px 20px rgba(200,167,91,.2)}
+  .fl-ai-input{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:#071423;color:#f6f8fb;padding:12px 13px;outline:none;font-size:15px}.fl-ai-input:focus{border-color:#d5b567;box-shadow:0 0 0 3px rgba(213,181,103,.12)}
+  .fl-ai-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.fl-ai-key-wrap{position:relative}.fl-ai-key-wrap .fl-ai-input{padding-right:86px}.fl-ai-showkey{position:absolute;right:7px;top:7px;height:32px;padding:0 9px;border:0;border-radius:8px;background:rgba(255,255,255,.07);color:#c9d6e5;cursor:pointer}.fl-ai-note{margin:9px 0 0;color:#9fb0c3;font-size:12px;line-height:1.65}.fl-ai-status{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.045);color:#b9c8d7;font-size:13px}.fl-ai-dot{width:8px;height:8px;border-radius:50%;background:#7f91a5;flex:none}.fl-ai-status.ok .fl-ai-dot{background:#62d79a;box-shadow:0 0 0 4px rgba(98,215,154,.12)}.fl-ai-status.err .fl-ai-dot{background:#e97878}
+  .fl-ai-actions{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:18px}.fl-ai-primary,.fl-ai-secondary{border-radius:12px;padding:12px 18px;cursor:pointer;font-weight:750}.fl-ai-primary{border:1px solid #e3c87e;background:linear-gradient(135deg,#d6b765,#a9853d);color:#101827;box-shadow:0 10px 24px rgba(194,157,72,.2)}.fl-ai-secondary{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#e4ebf4}.fl-ai-primary:disabled{opacity:.6;cursor:wait}
+  .fl-ai-mini{font-size:12px;color:#aebdce}.fl-ai-advanced{margin-top:10px}.fl-ai-advanced summary{cursor:pointer;color:#c7d4e2;font-size:13px}.fl-ai-advanced .fl-ai-row{margin-top:10px}
+  @media(max-width:640px){.fl-ai-modal{width:100%;max-height:94vh;border-radius:20px}.fl-ai-body{padding:16px}.fl-ai-head{padding:18px}.fl-ai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}.fl-ai-row{grid-template-columns:1fr}.fl-ai-actions{flex-direction:column-reverse}.fl-ai-actions button{width:100%}}
+</style>
+
+<style id="fivelens-v10-13-6-ux-polish">
+/* v10.13.6 UI polish: AI settings / User Guide / Member Center */
+.fl-ai-modal-backdrop{background:rgba(15,35,62,.42);backdrop-filter:blur(7px);padding:18px}
+.fl-ai-modal{width:min(820px,96vw);max-height:min(820px,94vh);border:1px solid #d7e0ea;border-radius:22px;background:#fff;color:#1b2b40;box-shadow:0 28px 80px rgba(18,42,72,.22);overflow:auto}
+.fl-ai-head{padding:20px 24px;background:#fff;border-bottom:1px solid #e3e9f0;position:sticky;top:0;z-index:3}
+.fl-ai-kicker{color:#a77c32;font-weight:800;letter-spacing:.18em}
+.fl-ai-head h2{color:#142f55;font-size:25px}
+.fl-ai-head p{color:#66758a}
+.fl-ai-close{background:#f6f8fb;color:#193a63;border:1px solid #d5dfeb}
+.fl-ai-body{padding:20px 24px 24px;background:#f7f9fc}
+.fl-ai-section{padding:17px 18px;border:1px solid #dce5ee;border-radius:16px;background:#fff;margin-bottom:12px;box-shadow:0 5px 16px rgba(20,47,85,.04)}
+.fl-ai-label{color:#173b70}.fl-ai-label small{color:#718096}
+.fl-ai-providers{grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.fl-ai-provider{border:1px solid #d6e0eb;background:#fff;color:#243d5e;border-radius:10px;padding:10px 8px;min-height:44px}
+.fl-ai-provider:hover{border-color:#b8914b;background:#fffaf0}
+.fl-ai-provider.active{background:#173f76;color:#fff;border-color:#173f76;box-shadow:0 7px 16px rgba(23,63,118,.16)}
+.fl-ai-input{border:1px solid #cfd9e5;background:#fff;color:#182b43;box-shadow:inset 0 1px 2px rgba(20,47,85,.03)}
+.fl-ai-input::placeholder{color:#9aa7b7}.fl-ai-input:focus{border-color:#b58b43;box-shadow:0 0 0 3px rgba(181,139,67,.12)}
+.fl-ai-showkey{background:#eef3f8;color:#29496c}
+.fl-ai-note,.fl-ai-mini{color:#68778b}.fl-ai-status{background:#f4f7fa;color:#53657b;border:1px solid #e1e7ee}
+.fl-ai-actions{border-top:1px solid #e1e7ee;padding-top:15px}.fl-ai-secondary{border:1px solid #cfd9e5;background:#fff;color:#29496c}.fl-ai-primary{border:1px solid #173f76;background:#173f76;color:#fff;box-shadow:0 8px 18px rgba(23,63,118,.16)}
+.fl-ai-primary:hover{background:#224f8d}.fl-ai-advanced summary{color:#36516f}
+
+/* Guide: reduce oversized header and give the explanation area more room */
+.fl-guide-backdrop{padding:12px;background:rgba(8,25,47,.62);backdrop-filter:blur(7px)}
+.fl-guide-modal{width:min(1240px,97vw);max-height:94vh;border-radius:20px;background:#f6f8fb;border:1px solid #d6e0eb;box-shadow:0 30px 90px rgba(8,25,47,.24)}
+.fl-guide-head{padding:16px 22px 14px;gap:16px;background:#fff;align-items:center}
+.fl-guide-kicker{font-size:10px;letter-spacing:.16em}.fl-guide-head h2{margin:4px 0 3px;font-size:23px;line-height:1.25}.fl-guide-head p{font-size:13px;line-height:1.5}
+.fl-guide-close{width:38px;height:38px;font-size:22px}
+.fl-guide-toolbar{padding:9px 22px;background:#f9fbfd;font-size:11px}.fl-guide-primary{padding:9px 14px;border-radius:10px}
+.fl-guide-body{padding:18px 22px 24px}
+.fl-guide-layout{grid-template-columns:190px minmax(0,1fr);gap:18px}
+.fl-guide-toc{gap:6px}.fl-guide-toc button{padding:9px 11px;border-radius:10px;font-size:13px}
+.fl-guide-section{padding:18px;border-radius:15px;margin-bottom:12px}.fl-guide-section h3{font-size:18px;margin-bottom:6px}.fl-guide-section p{font-size:13px;line-height:1.7;margin:6px 0}
+.fl-guide-steps{gap:8px;margin-top:10px}.fl-guide-step{grid-template-columns:30px 1fr;gap:9px;padding:10px 11px;border-radius:11px}.fl-guide-step b{width:26px;height:26px}.fl-guide-step span{font-size:12.5px;line-height:1.55}
+.fl-guide-feature-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.fl-guide-feature{padding:11px;border-radius:11px}.fl-guide-feature strong{font-size:13px}.fl-guide-feature small{font-size:11.5px;line-height:1.45}
+
+/* Member Center: guarantee readable text against white cards */
+.member-window{background:#f4f7fb;border:1px solid #cfd9e5;box-shadow:0 30px 90px rgba(5,18,38,.24)}
+.member-head{background:#173b70;color:#fff;border-bottom:1px solid #102f5f}.member-head h2{color:#fff}.member-head p{color:#dce7f5}
+.member-body{background:#f4f7fb;color:#26364f}.member-profile-card,.member-kpi,.member-card,.admin-dash{background:#fff;color:#26364f;border-color:#d4dee9}
+.member-profile-card h3,.member-kpi strong,.member-card h3,.admin-dash h3{color:#173b70}
+.member-profile-card p,.member-row span,.member-kpi span,.admin-kpi span,.member-card-note{color:#68778c}
+.member-row strong{color:#203b5d}.member-card-kicker{color:#a77c32!important;font-weight:800;letter-spacing:.12em;font-size:10px;margin-bottom:5px}
+.member-actions button{background:#fff;color:#24476e;border-color:#cbd7e4}.member-actions button:hover{background:#eef4fa;color:#173b70;border-color:#a9bdd4}
+.member-status.is-ready{background:#e8f6ee;color:#176b45}.member-status.is-pending{background:#fff4df;color:#7b5a20}
+@media(max-width:800px){.fl-guide-modal{width:98vw;max-height:95vh}.fl-guide-head{padding:14px 16px}.fl-guide-head h2{font-size:20px}.fl-guide-toolbar{padding:8px 16px}.fl-guide-body{padding:14px 16px 18px}.fl-guide-layout{grid-template-columns:1fr}.fl-guide-toc{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}.fl-guide-feature-grid{grid-template-columns:1fr}.fl-ai-modal{width:98vw}.fl-ai-body{padding:16px}.fl-ai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+
 </head>
 <body>
 <!-- ===== 登入門檻遮罩：未登入前蓋住全站功能 ===== -->
@@ -1177,7 +1291,7 @@ body.modal-open{overflow:hidden}
 <div class="auth-gate-card">
 <div class="ag-logo">🔮</div>
 <h2>五象 FiveLens</h2>
-<p id="ag-gate-text">請先使用 Google 帳號登入，即可開始使用全站的命理分析功能。</p>
+<p id="ag-gate-text">正式環境請先使用 Google 帳號登入；登入後若尚未完成基本資料，系統會自動開啟資料視窗。</p>
 <button class="ag-google-btn" id="ag-login-btn" type="button">
 <svg aria-hidden="true" viewbox="0 0 48 48"><path d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z" fill="#FFC107"></path><path d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.6 8.3 6.3 14.7z" fill="#FF3D00"></path><path d="M24 44c5.5 0 10.4-1.9 14.3-5.1l-6.6-5.6C29.6 35.1 27 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.6 5.1C9.5 39.6 16.2 44 24 44z" fill="#4CAF50"></path><path d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.6 5.6C41.9 36 44 30.5 44 24c0-1.3-.1-2.7-.4-3.5z" fill="#1976D2"></path></svg>
 <span>使用 Google 帳號登入</span>
@@ -1242,6 +1356,7 @@ body.modal-open{overflow:hidden}
   var logoutBtn = document.getElementById('auth-logout-btn');
 
   function showGate(){
+    if (new URLSearchParams(location.search).get('mode') === 'test') { gate.hidden = true; document.body.style.overflow=''; userBar.hidden=true; return; }
     gate.hidden = false;
     document.body.style.overflow = 'hidden';
     userBar.hidden = true;
@@ -1532,7 +1647,7 @@ body.modal-open{overflow:hidden}
     </nav>
     <div class="nav-actions">
       <div class="version-chips-wrap" id="versionChipsWrap">
-<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.11 更新 <span class="caret">▾</span></button>
+<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.13.11 更新 <span class="caret">▾</span></button>
 <div aria-label="版本更新細節" class="version-chips-popover" id="versionChipsPopover" role="region">
 <span class="v-chip">🗂️ v10.11：參考業界標準RWD側邊選單架構重新設計——桌機改為「常駐側欄，手動點擊收合鈕收合/展開」並記住使用者選擇，取代先前依賴滑鼠停留的做法；手機/平板改為「漢堡選單滑出式抽屜」，支援點背景、Esc鍵、切換分頁後自動關閉，桌機與手機統一為同一套選單元件</span>
 <span class="v-chip">🔐 新增 Google 帳號登入門檻，登入後才能使用全站功能；「回報結果疑慮」信箱整合為「建議信箱」，並改用 Gmail 網頁版連結（自動判斷登入狀態）</span>
@@ -1587,10 +1702,48 @@ body.modal-open{overflow:hidden}
       <button type="button" data-nav="guide">使用教學</button>
       <button type="button" data-nav="member">會員中心</button>
       <button type="button" data-nav="about">關於我們</button>
-      <button type="button" data-nav="version">v10.11 更新</button>
+      <button type="button" data-nav="version">v10.13.11 更新</button>
     </div>
   </div>
 </header>
+
+<!-- 基本資料入口：Google／Netlify Identity 登入後自動檢查。 -->
+<div class="profile-gate-backdrop" id="profileGateBackdrop" hidden>
+  <section class="profile-gate-window" id="profileGateWindow" role="dialog" aria-modal="true" aria-labelledby="profileGateTitle">
+    <div class="profile-gate-titlebar" id="profileGateTitlebar">
+      <div><strong id="profileGateTitle">完成基本資料</strong><small>FiveLens 個人命理資料中心</small></div>
+      <button class="profile-gate-close" id="profileGateClose" type="button" aria-label="關閉">×</button>
+    </div>
+    <div class="profile-gate-body">
+      <p class="profile-gate-intro">完成基本資料後，八字、紫微、西洋占星、流年及其他核心功能才會使用你的真實資料進行分析。</p>
+      <div class="profile-progress-label"><span>資料完成度</span><strong id="profileProgressText">0%</strong></div>
+      <div class="profile-progress"><span id="profileProgressBar"></span></div>
+      <form id="profileGateForm">
+        <div class="profile-gate-grid">
+          <div class="profile-gate-field"><label for="pgSurname">姓氏 *</label><input id="pgSurname" maxlength="2" required placeholder="例：陳"></div>
+          <div class="profile-gate-field"><label for="pgGivenName">名字 *</label><input id="pgGivenName" maxlength="4" required placeholder="例：志明"></div>
+          <div class="profile-gate-field"><label for="pgGender">性別 <span aria-hidden="true">*</span></label><select id="pgGender" required><option value="M">男</option><option value="F">女</option></select></div>
+          <div class="profile-gate-field"><label for="pgBirthDate">出生日期 *</label><input id="pgBirthDate" type="date" required></div>
+          <div class="profile-gate-field full"><label>出生時間 *</label><div class="profile-hour-row"><input id="pgBirthTime" type="time" value="12:00"><label><input id="pgUnknownHour" type="checkbox"> 時辰未知</label></div></div>
+          <div class="profile-gate-field"><label for="pgCounty">出生縣市 <span aria-hidden="true">*</span></label><select id="pgCounty" required><option value="">請選擇縣市</option></select></div>
+          <div class="profile-gate-field"><label for="pgDistrict">出生區域 <span aria-hidden="true">*</span></label><select id="pgDistrict" disabled required><option value="">請先選縣市</option></select></div>
+          <div class="profile-gate-field"><label for="pgLongitude">經度</label><input id="pgLongitude" type="number" step="0.01" value="121.50"></div>
+          <div class="profile-gate-field"><label for="pgLatitude">緯度</label><input id="pgLatitude" type="number" step="0.01" value="25.03"></div>
+        </div>
+        <div class="profile-gate-error" id="profileGateError" role="alert"></div>
+        <div style="margin-top:10px;font-size:12px;color:#718096">標示「*」為必填；經度、緯度為選填，可隨時修改。編輯既有資料時，原資料會先帶入，儲存後更新會員資料。</div>
+        <div class="profile-gate-actions"><button class="profile-secondary" id="profileGateCancel" type="button">稍後處理</button><button class="profile-primary" type="submit">儲存並解鎖功能</button></div>
+      </form>
+    </div>
+  </section>
+</div>
+<div class="member-backdrop" id="memberBackdrop" hidden>
+  <section class="member-window" role="dialog" aria-modal="true" aria-labelledby="memberTitle">
+    <div class="member-head"><div><h2 id="memberTitle">會員中心</h2><p>帳戶、基本資料與使用狀態</p></div><button class="member-close" id="memberClose" type="button">×</button></div>
+    <div class="member-body" id="memberBody"></div>
+  </section>
+</div>
+
 <main class="wrap" id="main-content"><div class="saved-modal-backdrop" id="savedModalBackdrop" hidden>
   <section class="saved-modal" role="dialog" aria-modal="true" aria-labelledby="savedModalTitle">
     <div class="saved-modal-head">
@@ -1608,6 +1761,30 @@ body.modal-open{overflow:hidden}
     <div class="saved-charts-list" id="savedChartsList"><p class="field-hint">尚無已存命盤，排盤完成後可於結果頁點選「💾 儲存本次命盤」加入存摺。</p></div>
   </section>
 </div>
+
+<section class="visual-showcase" aria-labelledby="visualShowcaseTitle">
+  <div class="visual-showcase-head">
+    <div>
+      <div class="visual-showcase-kicker">FIVELENS VISUAL EXPERIENCE</div>
+      <h2 id="visualShowcaseTitle">讓命理資訊先看得懂，再深入分析</h2>
+      <p>以品牌主視覺、專業照片式命盤場景、AI 工作場景與功能導覽，讓第一次使用的人也能快速理解五象在做什麼。</p>
+    </div>
+  </div>
+  <article class="visual-hero-card">
+    <div class="visual-hero-copy">
+      <div class="eyebrow">DESTINY · DATA · AI</div>
+      <h3>從一份出生資料，展開完整的人生分析視角。</h3>
+      <p>五象把傳統命理演算、結構化資訊與 AI 輔助整理成容易閱讀的介面；你可以先從基本資料開始，再依需要深入 28 大功能。</p>
+      <div class="visual-tags" aria-label="核心特色"><span class="visual-tag">命盤視覺化</span><span class="visual-tag">白話解讀</span><span class="visual-tag">28 大功能</span><span class="visual-tag">AI 輔助</span></div>
+    </div>
+    <div class="visual-hero-image"><img src="fivelens-hero.png" alt="五象 FiveLens 命盤專業主視覺" width="1555" height="1012" decoding="async" fetchpriority="high"></div>
+  </article>
+  <div class="visual-card-grid">
+    <article class="visual-card"><img src="assets/visual-chart-pro.jpg" alt="命盤視覺化專業情境圖片" width="900" height="520" loading="lazy" decoding="async"><div class="visual-card-body"><h3>命盤視覺化</h3><p>把四柱、宮位與結構關係用清楚的視覺語言呈現，降低第一次閱讀的門檻。</p></div></article>
+    <a href="#" class="visual-card is-link" data-visual-nav="ai" aria-label="進入 AI 智能區"><img src="assets/visual-ai-photo.jpg" alt="AI 智能區專業情境圖片，點擊進入 AI 智能區" width="900" height="520" loading="lazy" decoding="async"><div class="visual-card-body"><h3>AI 智能區 <span aria-hidden="true">↗</span></h3><p>設定自己的 AI API Key 後，以自然語言追問命盤與分析內容，點擊即可進入 AI 智能區。</p></div></a>
+    <a href="#" class="visual-card is-link" data-visual-nav="features" aria-label="進入 28 大功能"><img src="assets/visual-features-pro.jpg" alt="28 大功能專業情境圖片，點擊進入 28 大功能" width="900" height="520" loading="lazy" decoding="async"><div class="visual-card-body"><h3>28 大功能 <span aria-hidden="true">↗</span></h3><p>從八字、紫微、占星到流年、擇日、風水與合盤，點擊即可開啟 28 大功能選單。</p></div></a>
+  </div>
+</section>
 
 <section id="form-section">
 <div class="section-head">
@@ -4171,13 +4348,23 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     showFriendlyError(msg);
   }
   window.addEventListener('error', function(e){
-    console.error('[五象 FiveLens][全域安全網] 未攔截的錯誤：', e.error || e.message);
+    console.error('[五象 FiveLens][全域安全網] 未攔截的錯誤：', e.error || e.message, e.filename || '', e.lineno || '', e.colno || '');
+    // 導覽按鈕由專用導覽控制器負責錯誤處理；不要再由全域安全網覆蓋成通用錯誤提示。
+    if(window.__FiveLensNavigationBusy){ e.preventDefault(); return; }
     _throttledGlobalErrToast('這個操作剛才發生了預期外的問題，畫面可能沒有完成更新；可以重新整理頁面後再試一次，若持續發生歡迎透過頁尾聯絡信箱回報。');
   });
   window.addEventListener('unhandledrejection', function(e){
+    // 導覽／登入元件可能產生由第三方 Promise 傳出的 rejection。
+    // 這類錯誤不能再用全域錯誤條直接蓋掉真正的導覽畫面，否則點擊 AI／教學／會員中心時
+    // 會被誤判成「功能壞掉」。保留 console 紀錄供除錯，並避免未處理 rejection 繼續冒泡。
     console.error('[五象 FiveLens][全域安全網] 未攔截的非同步錯誤：', e.reason);
-    _throttledGlobalErrToast('這個操作剛才發生了預期外的問題（可能是網路連線或雲端服務暫時無回應）；可以稍後再試一次，若持續發生歡迎透過頁尾聯絡信箱回報。');
-  });
+    if(window.__FiveLensNavigationBusy){ e.preventDefault(); return; }
+    e.preventDefault();
+    // 非導覽功能仍保留友善提示，但不重複攔截導覽流程。
+    // 其他導覽不在這個攔截器處理，交回既有的頁面導覽事件；
+    // 絕對不能在這裡直接顯示全域錯誤提示，否則正常點擊會被誤判為錯誤。
+    return;
+  }, true);
 
   // ================= v10.3新增：全站按鈕統一「處理中」視覺回饋（缺失②修正的基礎設施） =================
   // 目的：使用者點擊「主要／小型」按鈕後，不管背後是同步或非同步(fetch/AI呼叫等)運算，
@@ -5025,6 +5212,12 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     document.getElementById('longitude').value = c.longitude;
     document.getElementById('latitude').value = c.latitude;
     document.getElementById('useTrueSolar').checked = c.useTrueSolarTime!==false;
+    // v10.13.10：載入命盤後必須先關閉「命盤存摺」Modal並解除頁面捲動鎖定，
+    // 否則 form-section 雖已定位，body.modal-open 仍會讓整個資料填寫頁無法往下捲動。
+    const savedBackdrop = document.getElementById('savedModalBackdrop');
+    if(savedBackdrop){ savedBackdrop.hidden = true; }
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
     const formSection = document.getElementById('form-section');
     formSection.classList.remove('hidden-until-cta');
     if(formSection.scrollIntoView){ formSection.scrollIntoView({behavior:'smooth', block:'start'}); }
@@ -7320,6 +7513,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       note:'Mistral Studio 目前提供 Free mode；模型名稱可由官方 /models 取得並可手動輸入，避免原廠換模型後程式失效。',
     },
   };
+  window.AI_PROVIDERS = AI_PROVIDERS;
   const AI_PROVIDER_KEY = 'zmp_ai_provider';
   const AI_LIMITS = Object.freeze({ RPM:14, RPD:49, TPM:19000, MAX_QUEUE_WAIT_MS:90000, TIMEOUT_MS:60000 });
   const AI_USAGE_KEY = 'fivelens_ai_usage_v1';
@@ -7404,6 +7598,10 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const models = Array.isArray(data.data) ? data.data : (Array.isArray(data.models) ? data.models : []);
     return models.map(m=>m.id || m.name || m.model).filter(Boolean);
   }
+  window.FiveLensAIEncode = v => Obfuscate.encode(v);
+  window.FiveLensAIDecode = v => Obfuscate.decode(v);
+  window.FiveLensAIGetSavedModel = cfg => getSavedProviderModel(cfg);
+  window.FiveLensAIFetchModels = (cfg,key,endpoint) => fetchProviderModels(cfg,key,endpoint);
 
   function modelFieldHtml(cfg, idPrefix){
     if(!cfg.needsModel) return '';
@@ -11883,6 +12081,24 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     <div id="navDirectoryGrid" class="nav-directory-grid"></div>
   </section>
 </div>
+
+<div class="fl-guide-backdrop" id="flGuideBackdrop" hidden>
+  <section class="fl-guide-modal" role="dialog" aria-modal="true" aria-labelledby="flGuideTitle">
+    <header class="fl-guide-head">
+      <div><div class="fl-guide-kicker">FIVELENS USER GUIDE</div><h2 id="flGuideTitle">使用教學與操作手冊</h2><p id="flGuideSubtitle">依目前網站功能與版本自動整理，讓第一次使用也能一步一步完成。</p></div>
+      <button type="button" id="flGuideClose" class="fl-guide-close" aria-label="關閉使用教學">×</button>
+    </header>
+    <div class="fl-guide-toolbar">
+      <div><strong id="flGuideVersion">目前版本</strong><span>・本頁內容由網站目前功能自動產生</span></div>
+      <button type="button" id="flGuideStart" class="fl-guide-primary">從第一步開始</button>
+    </div>
+    <div class="fl-guide-body" id="flGuideBody"></div>
+  </section>
+</div>
+<style id="fivelens-guide-style">
+.fl-guide-backdrop{position:fixed;inset:0;z-index:12000;background:radial-gradient(circle at 15% 5%,rgba(86,133,185,.2),transparent 35%),rgba(7,20,40,.9);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:22px}.fl-guide-backdrop[hidden]{display:none!important}.fl-guide-modal{width:min(1180px,96vw);max-height:92vh;overflow:hidden;border:1px solid rgba(255,255,255,.65);border-radius:28px;background:linear-gradient(180deg,#fbfdff,#eef3f8);box-shadow:0 42px 130px rgba(0,0,0,.38);display:flex;flex-direction:column}.fl-guide-head{display:flex;justify-content:space-between;gap:24px;padding:28px 32px 22px;border-bottom:1px solid #dce5ef}.fl-guide-kicker{font:700 11px var(--mono);letter-spacing:.22em;color:#a27b3c}.fl-guide-head h2{margin:7px 0 7px;color:#112f55;font-size:30px}.fl-guide-head p{margin:0;color:#68778c;line-height:1.7;font-size:14px}.fl-guide-close{width:44px;height:44px;border:1px solid #d7e0eb;border-radius:50%;background:#fff;color:#193a63;font-size:26px;cursor:pointer}.fl-guide-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 32px;background:#fff;border-bottom:1px solid #e3e9f0;color:#718096;font-size:12px}.fl-guide-toolbar strong{color:#173b70;font-size:13px}.fl-guide-primary{border:0;border-radius:12px;background:#173b70;color:#fff;padding:11px 17px;font-weight:700;cursor:pointer}.fl-guide-body{overflow:auto;padding:26px 32px 34px}.fl-guide-layout{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px}.fl-guide-toc{position:sticky;top:0;align-self:start;display:grid;gap:8px}.fl-guide-toc button{border:1px solid #dce5ef;background:#fff;border-radius:12px;padding:11px 13px;text-align:left;color:#36516f;font-weight:700;cursor:pointer}.fl-guide-toc button:hover{border-color:#9fb6d2;background:#f7faff}.fl-guide-section{scroll-margin-top:12px;background:#fff;border:1px solid #dce5ef;border-radius:20px;padding:22px;margin-bottom:16px;box-shadow:0 8px 24px rgba(23,54,88,.045)}.fl-guide-section h3{margin:0 0 8px;color:#173b70;font-size:20px}.fl-guide-section p{margin:7px 0;color:#617188;line-height:1.8;font-size:14px}.fl-guide-steps{display:grid;gap:10px;margin-top:14px}.fl-guide-step{display:grid;grid-template-columns:34px 1fr;gap:11px;align-items:start;padding:12px 13px;border-radius:14px;background:#f7f9fc;border:1px solid #e5ebf2}.fl-guide-step b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#173b70;color:#fff;font-size:12px}.fl-guide-step strong{color:#29496c}.fl-guide-step span{display:block;color:#6b788a;line-height:1.65;font-size:13px;margin-top:3px}.fl-guide-feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.fl-guide-feature{border:1px solid #e0e7ef;border-radius:14px;padding:14px;background:#fbfcfe}.fl-guide-feature strong{display:block;color:#29496c}.fl-guide-feature small{display:block;color:#748196;line-height:1.55;margin-top:5px}.fl-guide-note{padding:13px 15px;border-radius:13px;background:#fff8e8;border:1px solid #ead8ae;color:#735c2c;font-size:13px;line-height:1.7;margin-top:14px}.fl-guide-status{display:inline-block;padding:4px 8px;border-radius:999px;background:#e9f6ee;color:#18704a;font-size:11px;font-weight:700;margin-left:6px}@media(max-width:800px){.fl-guide-backdrop{padding:8px}.fl-guide-modal{width:98vw;max-height:95vh;border-radius:20px}.fl-guide-head,.fl-guide-toolbar,.fl-guide-body{padding-left:18px;padding-right:18px}.fl-guide-layout{grid-template-columns:1fr}.fl-guide-toc{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}.fl-guide-feature-grid{grid-template-columns:1fr}.fl-guide-head h2{font-size:25px}}
+</style>
+
 <footer class="lucidmind-footer" id="aboutStudio" aria-label="澄思 AI Studio 聯絡資訊">
   <div class="footer-inner">
     <div class="footer-brand">
@@ -11897,7 +12113,6 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       <a href="https://line.me/R/ti/p/~felix_line" id="lucidmindLineLink">Line：felix_line</a>
     </div>
   </div>
-  <div class="footer-bottom">FiveLens v10.11 · 本站內容僅供娛樂與自我探索參考</div>
 </footer>
 
 <div class="lucidmind-modal-backdrop" id="lucidmindLineModal" role="dialog" aria-modal="true" aria-labelledby="lucidmindLineTitle">
@@ -11924,8 +12139,78 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modal.classList.contains('show')) hide();});
 })();
 </script>
+
+<style id="fivelens-member-polish">
+.member-backdrop{background:rgba(7,20,40,.72)!important;backdrop-filter:blur(10px)}.member-window{width:min(900px,94vw)!important;max-height:88vh;overflow:auto;border:1px solid rgba(255,255,255,.7)!important;border-radius:26px!important;box-shadow:0 34px 100px rgba(4,17,35,.34)!important;background:linear-gradient(180deg,#fbfdff,#eef3f8)!important}.member-head{padding:26px 28px 20px!important;border-bottom:1px solid #dbe4ee!important}.member-head h2{font-size:28px!important;color:#102f55!important}.member-head p{color:#6a788c!important}.member-body{padding:24px 28px 30px!important}.member-profile-card{display:flex;align-items:center;gap:16px;padding:20px;border:1px solid #dce5ef;border-radius:20px;background:#fff;box-shadow:0 12px 30px rgba(21,48,80,.06)}.member-profile-main{min-width:0;flex:1}.member-eyebrow,.member-card-kicker{font:700 10px var(--mono);letter-spacing:.18em;color:#a27b3c}.member-profile-card h3{margin:5px 0 4px;color:#173b70;font-size:19px;overflow-wrap:anywhere}.member-profile-card p{margin:0;color:#68778d;font-size:13px}.member-status{padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700}.member-status.is-ready{background:#e8f6ee;color:#18704a}.member-status.is-pending{background:#fff5dc;color:#8a6429}.member-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}.member-kpi{padding:17px;border:1px solid #dce5ef;border-radius:17px;background:#fff}.member-kpi span{display:block;color:#68778d;font-size:12px}.member-kpi strong{display:block;color:#173b70;font-size:23px;margin-top:5px}.member-kpi small{display:block;color:#98a4b4;font-size:11px;margin-top:3px}.member-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.member-card{padding:22px;border:1px solid #dce5ef;border-radius:20px;background:#fff}.member-card h3{margin:5px 0 16px;color:#173b70}.member-card-note{margin:-5px 0 15px;color:#748196;font-size:13px;line-height:1.7}.member-row{display:flex;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid #edf1f5}.member-row:last-child{border-bottom:0}.member-row span{color:#78869a}.member-row strong{color:#263e61;text-align:right}.member-actions{display:grid;gap:10px}.member-actions button{min-height:44px;border:1px solid #d2deeb;border-radius:12px;background:#f8fafc;color:#21466f;font-weight:700;cursor:pointer}.member-actions button:hover{background:#eef4fb;border-color:#9fb6d2}.member-actions button#memberOpenCharts{background:#173b70;color:#fff;border-color:#173b70}.member-actions button#memberOpenCharts:hover{background:#214c82}@media(max-width:700px){.member-window{width:96vw!important}.member-head,.member-body{padding-left:18px!important;padding-right:18px!important}.member-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.member-grid{grid-template-columns:1fr}.member-profile-card{align-items:flex-start;flex-wrap:wrap}}
+</style>
+<style id="fivelens-member-premium-v10-13-7">
+/* v10.13.7 會員中心 Premium Dashboard */
+.member-backdrop{background:radial-gradient(circle at 18% 10%,rgba(183,145,76,.12),transparent 28%),rgba(7,20,40,.70)!important;backdrop-filter:blur(12px)!important;padding:24px!important}
+.member-window{width:min(980px,94vw)!important;max-height:90vh!important;background:#f5f8fc!important;border:1px solid #d5dfeb!important;border-radius:24px!important;box-shadow:0 36px 110px rgba(4,17,35,.30)!important;overflow:hidden!important}
+.member-head{position:relative;padding:22px 26px 20px!important;background:linear-gradient(135deg,#ffffff 0%,#f8fbff 62%,#eef4fa 100%)!important;color:#18385f!important;border-bottom:1px solid #d9e3ee!important;overflow:hidden}
+.member-head:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,#b28a4c,#173b70)}
+.member-head:after{content:"MEMBER CENTER";position:absolute;right:78px;top:18px;font:700 10px var(--mono);letter-spacing:.20em;color:#a47b3b;opacity:.78}
+.member-head h2{margin:0!important;color:#173b70!important;font-size:25px!important;letter-spacing:.01em!important}
+.member-head p{margin:6px 0 0!important;color:#68788e!important;font-size:13px!important}
+.member-close{position:relative;z-index:1;width:38px!important;height:38px!important;border:1px solid #cbd8e6!important;background:#fff!important;color:#29496e!important;border-radius:11px!important;font-size:21px!important;box-shadow:0 5px 16px rgba(28,55,85,.07)!important}
+.member-close:hover{background:#f0f5fa!important;border-color:#aebfd3!important;color:#173b70!important}
+.member-body{padding:22px 26px 28px!important;background:linear-gradient(180deg,#f5f8fc 0%,#eef3f8 100%)!important;color:#263b58!important}
+.member-profile-card{position:relative;display:flex!important;align-items:center!important;gap:16px!important;padding:19px 20px!important;border:1px solid #d8e2ed!important;border-radius:18px!important;background:linear-gradient(105deg,#ffffff 0%,#fbfdff 72%,#f6f9fc 100%)!important;box-shadow:0 10px 28px rgba(26,55,88,.06)!important;overflow:hidden}
+.member-profile-card:after{content:"";position:absolute;right:-42px;top:-56px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(180,139,72,.12),transparent 68%);pointer-events:none}
+.member-avatar{width:56px!important;height:56px!important;flex:0 0 56px!important;border:1px solid #d7c18e!important;background:linear-gradient(145deg,#fffdf7,#f3e9d0)!important;color:#7e602a!important;font-size:23px!important;box-shadow:inset 0 0 0 4px rgba(255,255,255,.75)!important}
+.member-profile-main{position:relative;z-index:1!important}
+.member-eyebrow,.member-card-kicker{color:#a17a3d!important;font-size:10px!important;letter-spacing:.18em!important}
+.member-profile-card h3{font-size:18px!important;color:#173b70!important}
+.member-profile-card p{color:#6c7b90!important}
+.member-status{position:relative;z-index:1;padding:7px 12px!important;border:1px solid transparent;font-size:11px!important;letter-spacing:.03em}
+.member-status.is-ready{background:#eaf7f0!important;color:#176b45!important;border-color:#c7e8d5!important}
+.member-status.is-pending{background:#fff6e2!important;color:#805f25!important;border-color:#ead7aa!important}
+.member-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin:14px 0 16px!important}
+.member-kpi{position:relative;min-height:92px;padding:16px 16px 14px!important;border:1px solid #d9e3ee!important;border-radius:16px!important;background:#fff!important;box-shadow:0 7px 20px rgba(25,55,87,.045)!important;overflow:hidden}
+.member-kpi:before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:linear-gradient(90deg,#b28a4c,#d7c18e)}
+.member-kpi span{color:#718097!important;font-size:11px!important;font-weight:700!important}
+.member-kpi strong{color:#173b70!important;font-size:22px!important;margin-top:7px!important}
+.member-kpi small{color:#98a4b3!important;font-size:10px!important}
+.member-grid{grid-template-columns:1.08fr .92fr!important;gap:14px!important}
+.member-card{padding:20px!important;border:1px solid #d9e3ee!important;border-radius:18px!important;background:#fff!important;box-shadow:0 8px 22px rgba(25,55,87,.045)!important}
+.member-card h3{color:#173b70!important;font-size:16px!important;margin:5px 0 14px!important}
+.member-card-note{color:#718096!important;line-height:1.75!important}
+.member-row{padding:11px 0!important;border-bottom:1px solid #edf1f5!important}
+.member-row span{color:#7a8798!important}
+.member-row strong{color:#233e61!important}
+.member-actions{gap:9px!important}
+.member-actions button{min-height:43px!important;border:1px solid #d1dce8!important;border-radius:11px!important;background:#fff!important;color:#26496f!important;box-shadow:0 3px 10px rgba(28,55,85,.035)!important}
+.member-actions button:hover{background:#f3f7fb!important;border-color:#9eb4cc!important;color:#173b70!important;transform:translateY(-1px)}
+.member-actions button#memberOpenCharts{background:linear-gradient(135deg,#173b70,#28558a)!important;color:#fff!important;border-color:#173b70!important;box-shadow:0 8px 18px rgba(23,59,112,.18)!important}
+.member-actions button#memberOpenCharts:hover{background:linear-gradient(135deg,#214c82,#34669a)!important;color:#fff!important}
+.member-actions button#memberLogout{color:#8b4d49!important;border-color:#e2c9c6!important;background:#fffafa!important}
+@media(max-width:760px){.member-backdrop{padding:10px!important}.member-window{width:96vw!important;max-height:94vh!important;border-radius:18px!important}.member-head{padding:19px 18px 16px!important}.member-head:after{display:none}.member-head h2{font-size:22px!important}.member-body{padding:16px 18px 22px!important}.member-profile-card{align-items:flex-start!important;flex-wrap:wrap!important}.member-status{margin-left:72px;margin-top:-6px}.member-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}.member-grid{grid-template-columns:1fr!important}.member-kpi{min-height:82px}}
+</style>
+<style id="fivelens-member-scroll-fix-v10-13-8">
+/* v10.13.8：修正會員中心內容超出視窗後無法向下捲動的問題 */
+.member-backdrop{
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  box-sizing:border-box!important;
+}
+.member-window{
+  max-height:calc(100vh - 48px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  box-sizing:border-box!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.member-body{
+  min-height:0;
+}
+@media(max-width:760px){
+  .member-backdrop{padding:10px!important;}
+  .member-window{max-height:calc(100vh - 20px)!important;overflow-y:auto!important;}
+}
+</style>
 <style id="fivelens-nav-directory-style">
-.nav-directory-backdrop{position:fixed;inset:0;z-index:11000;background:rgba(12,27,52,.62);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px}.nav-directory-backdrop[hidden]{display:none!important}.nav-directory{width:min(980px,94vw);max-height:84vh;overflow:auto;background:#fff;border:1px solid #dbe2ec;border-radius:22px;box-shadow:0 28px 80px rgba(8,24,50,.28);padding:24px}.nav-directory-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:1px solid #e7ebf2;padding-bottom:16px}.nav-directory-kicker{font:700 11px var(--mono);letter-spacing:.2em;color:#92713a}.nav-directory h2{margin:4px 0 5px;color:#173b70;font-size:25px}.nav-directory p{margin:0;color:#647087;font-size:14px;line-height:1.7}.nav-directory-close{width:38px;height:38px;border:1px solid #dce3ed;border-radius:50%;background:#f7f9fc;color:#263c62;font-size:25px;cursor:pointer}.nav-directory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}.nav-directory-grid.about-mode{display:block;width:100%}.nav-directory-item{display:flex;align-items:flex-start;gap:10px;width:100%;text-align:left;border:1px solid #e0e6ef;border-radius:13px;background:#fbfcfe;padding:12px 14px;color:#233f70;cursor:pointer;font:600 14px var(--sans);transition:.15s}.nav-directory-item:hover,.nav-directory-item:focus-visible{background:#eef3fb;border-color:#9fb1d1;outline:none}.nav-directory-item .num{font:700 11px var(--mono);color:#a47b3d;min-width:24px;padding-top:2px}.nav-about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;width:100%;margin:0}.nav-about-card{min-width:0;border:1px solid #e1e6ef;border-radius:14px;background:#f8fafc;padding:22px;color:#46536b;line-height:1.85;font-size:15px;box-sizing:border-box}.nav-about-card strong{display:block;color:#173b70;font-size:18px;margin-bottom:8px}.nav-about-card a{color:#8a6429;overflow-wrap:anywhere}.nav-about-card .about-contact-list{display:grid;gap:8px;margin-top:10px}.nav-about-card .about-contact-label{font-weight:700;color:#5b6880}.nav-ai-note{margin-top:16px;padding:13px 15px;border-radius:12px;background:#fff8e8;border:1px solid #ead7a7;color:#6c5424;font-size:13px;line-height:1.7}@media(max-width:640px){.nav-directory{padding:18px;border-radius:16px}.nav-directory-grid{grid-template-columns:1fr}.nav-about-grid{grid-template-columns:1fr}}
+.nav-directory-backdrop{position:fixed;inset:0;z-index:11000;background:radial-gradient(circle at 18% 8%,rgba(61,103,159,.24),transparent 34%),linear-gradient(135deg,rgba(7,20,40,.92),rgba(15,35,63,.94));backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;padding:28px}.nav-directory-backdrop[hidden]{display:none!important}.nav-directory{width:min(1180px,96vw);max-height:90vh;overflow:auto;background:linear-gradient(180deg,#f9fbfe 0%,#eef3f9 100%);border:1px solid rgba(255,255,255,.55);border-radius:28px;box-shadow:0 40px 120px rgba(0,0,0,.34);padding:34px;box-sizing:border-box}.nav-directory-head{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;border-bottom:1px solid #dce4ee;padding:4px 2px 24px}.nav-directory-kicker{font:700 11px var(--mono);letter-spacing:.24em;color:#a27b3c}.nav-directory h2{margin:7px 0 8px;color:#112f55;font-size:32px;letter-spacing:-.02em}.nav-directory p{margin:0;color:#66758b;font-size:14px;line-height:1.8}.nav-directory-close{flex:0 0 auto;width:44px;height:44px;border:1px solid #d7e0eb;border-radius:50%;background:#fff;color:#193a63;font-size:26px;cursor:pointer;box-shadow:0 8px 24px rgba(21,48,80,.08)}.nav-directory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}.nav-directory-grid.about-mode{display:block;width:100%}.nav-directory-item{position:relative;display:flex;align-items:flex-start;gap:14px;min-height:96px;width:100%;text-align:left;border:1px solid #dce5ef;border-radius:18px;background:rgba(255,255,255,.92);padding:18px;color:#17385f;cursor:pointer;font:650 15px var(--sans);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease;box-sizing:border-box}.nav-directory-item:hover,.nav-directory-item:focus-visible{transform:translateY(-2px);background:#fff;border-color:#a9bdd8;box-shadow:0 16px 34px rgba(24,55,91,.12);outline:none}.nav-directory-item .num{font:700 11px var(--mono);color:#a27b3c;min-width:28px;padding-top:2px}.nav-directory-item small{display:block;color:#7a8799;font-weight:500;margin-top:7px;line-height:1.5}.nav-directory-item:after{content:'↗';position:absolute;right:16px;bottom:14px;color:#a27b3c;font-size:15px}.nav-about-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;width:100%;margin:0}.nav-about-card{min-width:0;border:1px solid #dce5ef;border-radius:20px;background:linear-gradient(180deg,#fff,#f5f8fc);padding:28px;color:#526177;line-height:1.9;font-size:15px;box-sizing:border-box;box-shadow:0 12px 30px rgba(23,54,88,.06)}.nav-about-card strong{display:block;color:#12365f;font-size:21px;margin-bottom:10px}.nav-about-card p{margin:0 0 10px}.nav-about-card a{color:#8a6429;overflow-wrap:anywhere}.nav-about-card .about-contact-list{display:grid;gap:12px;margin-top:14px}.nav-about-card .about-contact-label{font-weight:700;color:#53647b}.nav-about-card:first-child{background:radial-gradient(circle at 100% 0,rgba(172,137,75,.12),transparent 36%),linear-gradient(180deg,#fff,#f5f8fc)}.nav-about-card:first-child:before{content:'FIVELENS';display:block;font:700 10px var(--mono);letter-spacing:.22em;color:#a27b3c;margin-bottom:12px}.nav-ai-note{margin-top:20px;padding:16px 18px;border-radius:16px;background:linear-gradient(90deg,#fff9ea,#fffdf8);border:1px solid #ead8ae;color:#6c5424;font-size:13px;line-height:1.8}@media(max-width:900px){.nav-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:640px){.nav-directory-backdrop{padding:10px}.nav-directory{padding:20px;border-radius:20px;max-height:94vh}.nav-directory-head{padding-bottom:18px}.nav-directory h2{font-size:25px}.nav-directory-grid{grid-template-columns:1fr;gap:11px}.nav-about-grid{grid-template-columns:1fr}.nav-directory-item{min-height:80px;padding:15px}}
 </style>
 <script id="fivelens-nav-controller">
 (function(){
@@ -11952,6 +12237,35 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     group.click(); tab.click();
     rail?.scrollIntoView({behavior:'smooth',block:'start'}); return true;
   }
+  function openUserGuide(){
+    const backdrop=$('flGuideBackdrop'), body=$('flGuideBody'), version=$('flGuideVersion');
+    if(!backdrop||!body)return;
+    const versionText=(($('versionBadgeBtn')?.textContent||'').replace(/▾/g,'').trim())||'目前版本';
+    if(version) version.textContent=versionText;
+    const featureMap={
+      bazi:['八字命盤','輸入出生資料後查看四柱、日主與相關命理摘要。'],ziwei:['紫微斗數','完成排盤後查看命宮、主星與十二宮相關資訊。'],astro:['西洋占星','查看太陽星座與西洋占星相關命盤資訊。'],name:['姓名學','輸入姓名後查看姓名五格與相關分析。'],yijing:['易經卦象','依目前功能提供卦象與解讀資訊。'],tarot:['塔羅牌占卜','依畫面指示抽牌並查看牌義與解讀。'],palmface:['手相面相分析','進入影像分析功能並依提示上傳或操作。'],hourcalib:['時辰校準器','當出生時間不確定時，依提示進行時辰校準。'],report:['綜合運勢報告','查看整合後的命盤與運勢報告。'],aiqa:['AI 白話追問','先設定 AI Key，再用自然語言追問命盤內容。'],poster:['命盤解析報告','查看或產出較完整的命盤解析內容。'],timeline:['命盤時間軸','依時間查看命盤相關重要節點。'],feedback:['準確度回饋與回測','完成分析後提供回饋，協助檢視結果。'],liunian:['流年運勢','查看年度運勢與年齡階段資訊。'],liuyue:['流月流日精算','查看月份與日期層級的運勢資訊。'],yearsynth:['年度綜合摘要','快速掌握年度重點。'],zeri:['擇日 Copilot','輸入事件與條件，依畫面取得擇日建議。'],bizzeri:['企業擇日','提供企業活動相關擇日流程。'],fengshui:['風水方位','依功能提示查看方位相關資訊。'],almanac:['每日宜忌通書','查看每日宜忌與通書資訊。'],zodiacyear:['生肖流年速覽','快速查看生肖年度重點。'],taishen:['胎神方位','查看胎神方位資訊。'],csection:['剖腹擇日','依畫面條件進行剖腹擇日流程。'],compat:['合盤比對','輸入兩人的資料後查看關係與相容性資訊。'],teamcompat:['團隊相容性','依成員資料查看團隊互動相關資訊。'],actionplan:['年度行動看板','把年度分析整理成可追蹤的行動項目。'],marketing:['行銷個人化','依分析結果產生個人化行銷方向。'],bizplan:['企業方案','查看企業相關功能與方案資訊。']};
+    const groupsText=(typeof groups!=='undefined'?groups:[]);
+    const featureCards=groupsText.flatMap(g=>g.tabs.map(t=>({id:t[0],name:(t[1]||'').replace(/^[^\u4e00-\u9fffA-Za-z0-9]+/,'').trim(),desc:featureMap[t[0]]?.[1]||'依畫面提示操作此功能。',group:g.label})));
+    const escg=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    body.innerHTML=`<div class="fl-guide-layout"><nav class="fl-guide-toc" aria-label="教學章節">
+      <button type="button" data-guide-jump="start">開始使用</button><button type="button" data-guide-jump="profile">基本資料</button><button type="button" data-guide-jump="features">28 大功能</button><button type="button" data-guide-jump="ai">AI 智能區</button><button type="button" data-guide-jump="member">會員中心</button><button type="button" data-guide-jump="faq">常見問題</button>
+    </nav><main>
+      <section class="fl-guide-section" id="guide-start"><h3>① 第一次使用怎麼做？</h3><p>不需要懂命理。照著畫面從上到下完成即可；每個功能都會在需要時提示下一步。</p><div class="fl-guide-steps"><div class="fl-guide-step"><b>1</b><div><strong>登入</strong><span>使用會員功能前，先完成 Google／Netlify Identity 登入。</span></div></div><div class="fl-guide-step"><b>2</b><div><strong>填寫基本資料</strong><span>姓名、性別、出生日期、出生地等欄位依畫面標示填寫；必填欄位未完成時，系統會提示缺少項目。</span></div></div><div class="fl-guide-step"><b>3</b><div><strong>完成排盤</strong><span>按下排盤後，系統會產生目前可用的命盤與分析結果。</span></div></div><div class="fl-guide-step"><b>4</b><div><strong>選擇功能</strong><span>從「28 大功能」或「AI 智能區」進入想使用的分析。</span></div></div></div></section>
+      <section class="fl-guide-section" id="guide-profile"><h3>② 基本資料怎麼填？</h3><p>資料是後續命盤功能的基礎。標示「*」的是必填欄位；「選填」則可以先留白。</p><div class="fl-guide-note">如果出生時間不確定，可勾選「時辰未知」。系統會依目前規則處理，不會要求你硬填一個不確定的時間。</div><p>會員中心 →「編輯基本資料」可以重新修改已儲存資料。修改後請按儲存，系統會重新檢查必填欄位。</p></section>
+      <section class="fl-guide-section" id="guide-features"><h3>③ 28 大功能怎麼用？</h3><p>以下清單會直接從目前程式的功能清單產生，因此新增、刪除或調整功能時，操作手冊也會跟著更新。共 <strong>${featureCards.length}</strong> 項。</p><div class="fl-guide-feature-grid">${featureCards.map(x=>`<div class="fl-guide-feature"><strong>${escg(x.name)}</strong><small>${escg(x.desc)}</small></div>`).join('')}</div></section>
+      <section class="fl-guide-section" id="guide-ai"><h3>④ AI 智能區怎麼用？</h3><p>第一次使用 AI 時，點上方「AI 智能區」會進入統一 AI 設定；選擇 AI 服務並輸入 API Key。</p><div class="fl-guide-steps"><div class="fl-guide-step"><b>1</b><div><strong>第一次設定</strong><span>選擇 AI 供應商 → 輸入 API Key → 測試連線 → 儲存。</span></div></div><div class="fl-guide-step"><b>2</b><div><strong>之後直接使用</strong><span>只要瀏覽器仍保有已儲存的 API Key，點上方「AI 智能區」會直接進入，不會要求重填。</span></div></div><div class="fl-guide-step"><b>3</b><div><strong>更換設定</strong><span>進入 AI 智能區後仍可開啟 AI 設定，修改供應商、模型或 API Key。</span></div></div></div><div class="fl-guide-note">API Key 是使用者自己的金鑰，依目前架構由瀏覽器直接連到所選 AI 服務。請勿在公用電腦保存金鑰。</div></section>
+      <section class="fl-guide-section" id="guide-member"><h3>⑤ 會員中心怎麼用？</h3><p>登入後點「會員中心」，可以查看帳戶狀態、基本資料與已儲存命盤。</p><div class="fl-guide-steps"><div class="fl-guide-step"><b>1</b><div><strong>查看基本資料</strong><span>確認姓名、出生日期、時間與出生地等資料。</span></div></div><div class="fl-guide-step"><b>2</b><div><strong>編輯基本資料</strong><span>點「編輯基本資料」後可修改可編輯欄位；系統會判斷必填欄位。</span></div></div><div class="fl-guide-step"><b>3</b><div><strong>命盤存摺</strong><span>從會員中心進入已儲存的命盤，查看或管理過去資料。</span></div></div></div></section>
+      <section class="fl-guide-section" id="guide-faq"><h3>⑥ 常見問題</h3><p><strong>為什麼功能不能使用？</strong><br>通常是尚未登入、基本資料尚未完成，或該功能需要先完成排盤。請依畫面提示處理。</p><p><strong>為什麼 AI 又要求 API Key？</strong><br>若瀏覽器沒有找到目前可用的已儲存 Key，才會重新要求設定；已正常保存的 Key 不應每次重填。</p><p><strong>版本更新後教學會不會過期？</strong><br>本手冊的版本、功能清單與主要操作步驟會由目前頁面程式自動產生；版更時不需要另外手動維護功能清單。</p></section>
+    </main></div>`;
+    backdrop.hidden=false; document.body.classList.add('modal-open'); setTimeout(()=>$('flGuideClose')?.focus(),0);
+    body.querySelectorAll('[data-guide-jump]').forEach(btn=>btn.addEventListener('click',()=>{ $('guide-'+btn.dataset.guideJump)?.scrollIntoView({behavior:'smooth',block:'start'}); }));
+    $('flGuideStart')?.addEventListener('click',()=>$('guide-start')?.scrollIntoView({behavior:'smooth',block:'start'}),{once:true});
+  }
+  const guideBackdrop=$('flGuideBackdrop'); const guideClose=$('flGuideClose');
+  guideClose?.addEventListener('click',()=>{guideBackdrop.hidden=true;document.body.classList.remove('modal-open')});
+  guideBackdrop?.addEventListener('click',e=>{if(e.target===guideBackdrop){guideBackdrop.hidden=true;document.body.classList.remove('modal-open')}});
+  window.FiveLensOpenUserGuide=openUserGuide;
+
   function openDirectory(kind){
     if(!dirBackdrop||!dirGrid)return;
     dirGrid.classList.remove('about-mode');
@@ -11983,25 +12297,306 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     if(key==='home'){$('form-section')?.scrollIntoView({behavior:'smooth',block:'start'});return}
     if(key==='saved'){openSaved();return}
     if(key==='features'){openDirectory('features');return}
-    if(key==='ai'){openDirectory('ai');return}
-    if(key==='guide'){const d=[...document.querySelectorAll('details')].find(x=>x.textContent.includes('演算法與精度說明'));if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'start'});}else{$('form-section')?.scrollIntoView({behavior:'smooth',block:'start'});return;}}
+    if(key==='ai'){if(window.FiveLensAIConfigured?.()){window.FiveLensOpenAIArea?.();}else{window.FiveLensOpenAISettings?.();}return}
+    if(key==='guide'){ try{ window.FiveLensOpenUserGuide?.(); }catch(err){ console.error('[五象] 使用教學導覽失敗：',err); window.showFriendlyError?.('使用教學目前無法開啟，請重新整理頁面後再試。'); } return; }
     if(key==='member'){
-      var user = window.netlifyIdentity && netlifyIdentity.currentUser && netlifyIdentity.currentUser();
-      if(user){
-        window.showFriendlyError?.('目前已登入：' + (user.email || 'Google 帳號')); 
-      }else if(window.netlifyIdentity){
-        netlifyIdentity.open('login');
-      }else{
-        window.showFriendlyError?.('Google 登入元件尚未載入，請重新整理頁面後再試一次。');
+      try{
+        window.FiveLensOpenMember?.();
+      }catch(err){
+        console.error('[五象] 會員中心導覽失敗：',err);
+        window.showFriendlyError?.('會員中心目前無法開啟，請稍後再試。');
       }
       return;
     }
     if(key==='about'){openAbout();return}
     if(key==='version'){$('versionBadgeBtn')?.click();return}
   }
+  window.FiveLensOpenAIArea=()=>openDirectory('ai');
+  window.FiveLensOpenFeatureArea=()=>openDirectory('features');
+  document.addEventListener('click',e=>{
+    const card=e.target.closest('[data-visual-nav]'); if(!card)return;
+    e.preventDefault();
+    const key=card.dataset.visualNav;
+    if(key==='ai'){
+      try{ if(window.FiveLensAIConfigured?.()){window.FiveLensOpenAIArea?.();}else{window.FiveLensOpenAISettings?.();} }
+      catch(err){console.error('[五象] AI 視覺入口開啟失敗：',err);window.showFriendlyError?.('AI 智能區目前無法開啟，請稍後再試。');}
+    }else if(key==='features'){
+      try{ window.FiveLensOpenFeatureArea?.(); }
+      catch(err){console.error('[五象] 28 大功能視覺入口開啟失敗：',err);window.showFriendlyError?.('28 大功能目前無法開啟，請稍後再試。');}
+    }
+  });
+  document.addEventListener('keydown',e=>{
+    if((e.key==='Enter'||e.key===' ') && e.target.closest('[data-visual-nav]')){e.preventDefault();e.target.closest('[data-visual-nav]').click();}
+  });
   window.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();navigate(el.dataset.nav)}));
   });
+})();
+</script>
+
+<script id="fivelens-profile-gate-controller">
+(function(){
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const backdrop=$('profileGateBackdrop'), win=$('profileGateWindow'), titlebar=$('profileGateTitlebar'), form=$('profileGateForm');
+  const closeBtn=$('profileGateClose'), cancelBtn=$('profileGateCancel'), error=$('profileGateError');
+  const badge=$('auth-status-badge');
+  let profile=null, dragging=false, dx=0, dy=0;
+  window.FiveLensProfile=null;
+
+  function setError(msg){ error.textContent=msg||''; error.style.display=msg?'block':'none'; }
+  function fields(){ return {
+    surname:$('pgSurname').value.trim(), givenName:$('pgGivenName').value.trim(), gender:$('pgGender').value,
+    birthDate:$('pgBirthDate').value, birthTime:$('pgBirthTime').value, unknownHour:$('pgUnknownHour').checked,
+    county:$('pgCounty').value, district:$('pgDistrict').value, longitude:Number($('pgLongitude').value||121.5), latitude:Number($('pgLatitude').value||25.03), timezone:'Asia/Taipei'
+  }; }
+  function validateProfileFields(p){
+    const required=[['姓氏',p.surname],['名字',p.givenName],['性別',p.gender],['出生日期',p.birthDate],['出生縣市',p.county],['出生區域',p.district]];
+    const missing=required.filter(([,v])=>!v).map(([k])=>k);
+    if(!p.birthTime && !p.unknownHour) missing.push('出生時間（或勾選時辰未知）');
+    if(missing.length){ setError('請完成必填欄位：'+missing.join('、')+'。經度與緯度為選填，可修改。'); return false; }
+    return true;
+  }
+  function complete(p){ return !!p && !!p.surname && !!p.givenName && !!p.gender && !!p.birthDate && (!!p.birthTime || p.unknownHour) && !!p.county && !!p.district; }
+  function progress(p){ const checks=[p?.surname,p?.givenName,p?.birthDate,(p?.birthTime||p?.unknownHour),p?.county,p?.district]; return Math.round(checks.filter(Boolean).length/checks.length*100); }
+  function updateProgress(){ const p=fields(), n=progress(p); $('profileProgressBar').style.width=n+'%'; $('profileProgressText').textContent=n+'%'; }
+  function populateCities(){
+    const source=$('countySelect'), target=$('pgCounty'); if(!source||!target)return;
+    target.innerHTML=source.innerHTML; target.value='';
+    if(target.dataset.bound)return; target.dataset.bound='1';
+    target.addEventListener('change',()=>{
+      const srcDistrict=$('districtSelect'); const d=$('pgDistrict'); if(!srcDistrict||!d)return;
+      source.value=target.value;
+      source.dispatchEvent(new Event('change',{bubbles:true}));
+      setTimeout(()=>{
+        d.innerHTML=srcDistrict.innerHTML; d.disabled=srcDistrict.disabled;
+        if(!target.value){d.innerHTML='<option value="">請先選擇縣市</option>';d.disabled=true;}
+        updateProgress();
+      },0);
+    });
+  }
+  function fillForm(p){
+    p=p||{};
+    $('pgSurname').value=p.surname||'';
+    $('pgGivenName').value=p.givenName||'';
+    $('pgGender').value=p.gender||'M';
+    $('pgBirthDate').value=p.birthDate||'';
+    $('pgBirthTime').value=p.birthTime||'12:00';
+    $('pgUnknownHour').checked=!!p.unknownHour;
+    $('pgBirthTime').disabled=!!p.unknownHour;
+    $('pgLongitude').value=Number.isFinite(p.longitude)?p.longitude:121.5;
+    $('pgLatitude').value=Number.isFinite(p.latitude)?p.latitude:25.03;
+    const county=$('pgCounty'), district=$('pgDistrict');
+    if(county){
+      county.value=p.county||'';
+      const src=$('countySelect');
+      if(src && county.value){
+        src.value=county.value;
+        src.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+    }
+    const setDistrict=()=>{
+      if(!district)return;
+      const srcDistrict=$('districtSelect');
+      if(srcDistrict && !srcDistrict.disabled){
+        district.innerHTML=srcDistrict.innerHTML;
+        district.disabled=false;
+        district.value=p.district||'';
+      }else if(!county?.value){
+        district.innerHTML='<option value="">請先選擇縣市</option>';
+        district.disabled=true;
+        district.value='';
+      }
+      updateProgress();
+    };
+    setDistrict();
+    setTimeout(setDistrict,0);
+    setTimeout(setDistrict,100);
+    updateProgress();
+  }
+  function syncMainForm(p){ if(!p)return; $('surname').value=p.surname||''; $('givenName').value=p.givenName||''; const r=document.querySelector('input[name="gender"][value="'+(p.gender||'M')+'"]'); if(r)r.checked=true; $('birthDate').value=p.birthDate||''; $('birthTime').value=p.birthTime||'12:00'; $('unknownHour').checked=!!p.unknownHour; if($('longitude'))$('longitude').value=Number.isFinite(p.longitude)?p.longitude:121.5; if($('latitude'))$('latitude').value=Number.isFinite(p.latitude)?p.latitude:25.03; }
+  function openGate(reason){
+    backdrop.hidden=false; document.body.classList.add('modal-open'); fillForm(profile||{});
+    $('profileGateCancel').style.display=complete(profile)?'inline-block':'none';
+    $('profileGateTitle').textContent=reason||'完成基本資料';
+    setTimeout(()=>$('pgSurname').focus(),50);
+  }
+  function closeGate(){ if(!complete(profile)){ setError('基本資料尚未完成。完成後才能使用需要出生資料的核心功能。'); return; } backdrop.hidden=true; document.body.classList.remove('modal-open'); }
+  async function loadProfile(){
+    const user=window.netlifyIdentity?.currentUser?.(); if(!user)return null;
+    try{const res=await fetch('/.netlify/functions/profile',{headers:{Authorization:'Bearer '+await user.jwt()}}); if(!res.ok)throw new Error('HTTP '+res.status); const data=await res.json(); profile=data.profile||null; window.FiveLensProfile=profile; syncMainForm(profile); return profile;}catch(e){console.error(e);setError('無法讀取雲端基本資料，請稍後再試。');return null;}
+  }
+  async function saveProfile(p){
+    if(!validateProfileFields(p))return false;
+    const user=window.netlifyIdentity?.currentUser?.(); if(!user){setError('請先登入 Google 帳號。');return false;}
+    try{const res=await fetch('/.netlify/functions/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.jwt()},body:JSON.stringify(p)}); const data=await res.json(); if(!res.ok)throw new Error(data.error||'儲存失敗'); profile=data.profile; window.FiveLensProfile=profile; syncMainForm(profile); return true;}catch(e){setError(e.message||'基本資料儲存失敗。');return false;}
+  }
+  async function ensureProfile(){
+    const p=await loadProfile();
+    if(!complete(p)) openGate('完成基本資料後開始使用');
+    else {if(badge)badge.textContent='已登入・資料完成';}
+    return complete(p);
+  }
+  form.addEventListener('input',updateProgress); form.addEventListener('change',updateProgress);
+  form.addEventListener('submit',async e=>{e.preventDefault();setError('');const ok=await saveProfile(fields());if(ok){backdrop.hidden=true;document.body.classList.remove('modal-open');if(badge)badge.textContent='已登入・資料完成';window.showFriendlyError?.('基本資料已完成，核心功能已解鎖。',{type:'success'});}});
+  closeBtn.addEventListener('click',closeGate); cancelBtn.addEventListener('click',closeGate);
+  titlebar.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;dragging=true;const r=win.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;win.style.position='fixed';win.style.margin='0';win.style.left=r.left+'px';win.style.top=r.top+'px';});
+  window.addEventListener('mousemove',e=>{if(!dragging)return;const w=win.getBoundingClientRect();win.style.left=Math.max(8,Math.min(window.innerWidth-w.width-8,e.clientX-dx))+'px';win.style.top=Math.max(8,Math.min(window.innerHeight-w.height-8,e.clientY-dy))+'px';});
+  window.addEventListener('mouseup',()=>dragging=false);
+  $('pgUnknownHour').addEventListener('change',()=>{$('pgBirthTime').disabled=$('pgUnknownHour').checked;updateProgress();});
+  document.addEventListener('zmp:auth-ready',()=>{ensureProfile();});
+  document.addEventListener('DOMContentLoaded',async()=>{populateCities(); setTimeout(populateCities,600);});
+  window.FiveLensOpenProfile=()=>openGate('編輯基本資料');
+  window.FiveLensHasCompleteProfile=()=>complete(profile);
+
+  // 會員中心：真實顯示登入帳號與基本資料，不再只顯示「已登入」提示。
+  const mb=$('memberBackdrop'), mbClose=$('memberClose'), mbBody=$('memberBody');
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function openMember(){
+    try{
+      let u=null;
+      try{ u=window.netlifyIdentity?.currentUser?.()||null; }catch(identityErr){ console.warn('[五象] 會員狀態讀取失敗，改用目前頁面狀態：',identityErr); }
+      if(!u){ window.netlifyIdentity?.open?.('login'); return; }
+      const email=u.email||'未提供電子郵件'; const p=profile||{};
+      let stats=0;
+      try{ const saved=window.__zmpGetSavedCharts?.(); stats=Array.isArray(saved)?saved.length:0; }catch(chartErr){ console.warn('[五象] 命盤統計暫時無法讀取：',chartErr); }
+      if(!mbBody||!mb){ return; }
+      const pct=progress(p); const ready=complete(p);
+      mbBody.innerHTML=`<div class="member-profile-card"><div class="member-avatar">👤</div><div class="member-profile-main"><div class="member-eyebrow">ACCOUNT OVERVIEW</div><h3>${esc(email)}</h3><p>Google／Netlify Identity · 基本資料 ${ready?'已完成':'尚未完成'}</p></div><span class="member-status ${ready?'is-ready':'is-pending'}">${ready?'資料完成':'待完成'}</span></div><div class="member-kpis"><div class="member-kpi"><span>我的命盤</span><strong>${stats}</strong><small>已儲存資料</small></div><div class="member-kpi"><span>基本資料</span><strong>${pct}%</strong><small>完成度</small></div><div class="member-kpi"><span>登入狀態</span><strong>正常</strong><small>帳戶服務</small></div><div class="member-kpi"><span>登入方式</span><strong style="font-size:15px">Google</strong><small>目前帳戶</small></div></div><div class="member-grid"><div class="member-card"><div class="member-card-kicker">PROFILE</div><h3>基本資料</h3><div class="member-row"><span>姓名</span><strong>${esc((p.surname||'')+(p.givenName||'')||'尚未填寫')}</strong></div><div class="member-row"><span>出生日期</span><strong>${esc(p.birthDate||'—')}</strong></div><div class="member-row"><span>出生時間</span><strong>${p.unknownHour?'時辰未知':esc(p.birthTime||'—')}</strong></div><div class="member-row"><span>出生地</span><strong>${esc((p.county||'')+(p.district||'')||'—')}</strong></div></div><div class="member-card"><div class="member-card-kicker">ACCOUNT ACTIONS</div><h3>帳戶操作</h3><p class="member-card-note">管理基本資料、查看命盤存摺或安全登出目前帳戶。</p><div class="member-actions"><button type="button" id="memberEditProfile">編輯基本資料</button><button type="button" id="memberOpenCharts">開啟命盤存摺</button><button type="button" id="memberLogout">登出 Google</button></div></div></div>`;
+      mb.hidden=false;document.body.classList.add('modal-open');
+      $('memberEditProfile')?.addEventListener('click',()=>{mb.hidden=true;openGate('編輯基本資料');});
+      $('memberOpenCharts')?.addEventListener('click',()=>{mb.hidden=true;document.body.classList.remove('modal-open');document.getElementById('savedModalBackdrop')?.removeAttribute('hidden');});
+      $('memberLogout')?.addEventListener('click',()=>{try{window.netlifyIdentity?.logout?.();}catch(err){console.error('[五象] 登出失敗：',err);showFriendlyError('目前無法完成登出，請稍後再試。');}});
+    }catch(err){
+      console.error('[五象] 開啟會員中心失敗：',err);
+      showFriendlyError('會員中心目前無法載入，但不會影響已儲存的資料；請稍後再試。');
+    }
+  }
+  mbClose.addEventListener('click',()=>{mb.hidden=true;document.body.classList.remove('modal-open')});
+  window.FiveLensOpenMember=openMember;
+
+  // 全站導覽：會員中心改成真正頁面；28 大功能／AI 先確保基本資料完成。
+  document.addEventListener('click',e=>{
+    const nav=e.target.closest('[data-nav]'); if(!nav)return; const key=nav.dataset.nav;
+    if(key==='member'){
+      e.preventDefault(); e.stopImmediatePropagation();
+      window.__FiveLensNavigationBusy=true;
+      try{ openMember(); }catch(err){ console.error('[五象] 會員中心 click 失敗：',err); showFriendlyError('會員中心目前無法開啟，請稍後再試。'); }
+      setTimeout(()=>{window.__FiveLensNavigationBusy=false},1200);
+      return;
+    }
+    if(key==='ai'){
+      e.preventDefault(); e.stopImmediatePropagation();
+      window.__FiveLensNavigationBusy=true;
+      try{
+        if(window.FiveLensAIConfigured?.()){ window.FiveLensOpenAIArea?.(); }
+        else { window.FiveLensOpenAISettings?.(); }
+      }catch(err){ console.error('[五象] AI 智能區 click 失敗：',err); showFriendlyError('AI 智能區目前無法開啟，請稍後再試。'); }
+      setTimeout(()=>{window.__FiveLensNavigationBusy=false},1200);
+      return;
+    }
+    if(key==='guide'){
+      e.preventDefault(); e.stopImmediatePropagation(); window.__FiveLensNavigationBusy=true;
+      try{ window.FiveLensOpenUserGuide?.(); }catch(err){ console.error('[五象] 使用教學 click 失敗：',err); showFriendlyError('使用教學目前無法開啟，請稍後再試。'); }
+      setTimeout(()=>{window.__FiveLensNavigationBusy=false},1200); return;
+    }
+    if(key==='features' && !window.netlifyIdentity?.currentUser?.()){e.preventDefault();e.stopImmediatePropagation();try{window.netlifyIdentity?.open('login');}catch(err){showFriendlyError('登入元件目前無法開啟，請稍後再試。');}return;}
+    if(key==='features' && !complete(profile)){e.preventDefault();e.stopImmediatePropagation();openGate('先完成基本資料');return;}
+  },true);
+})();
+</script>
+
+
+<div class="fl-ai-modal-backdrop" id="flAiModal" hidden>
+  <section class="fl-ai-modal" role="dialog" aria-modal="true" aria-labelledby="flAiTitle">
+    <div class="fl-ai-head">
+      <div><div class="fl-ai-kicker">FiveLens AI</div><h2 id="flAiTitle">AI 智能設定</h2><p>一次設定，所有 AI 功能共用。</p></div>
+      <button type="button" class="fl-ai-close" id="flAiClose" aria-label="關閉">×</button>
+    </div>
+    <div class="fl-ai-body">
+      <div class="fl-ai-section">
+        <div class="fl-ai-label"><span>① 選擇 AI 服務</span><small id="flAiProviderLabel">尚未設定</small></div>
+        <div class="fl-ai-providers" id="flAiProviders"></div>
+      </div>
+      <div class="fl-ai-section">
+        <div class="fl-ai-label"><span>② API Key</span><small>只存本機瀏覽器</small></div>
+        <div class="fl-ai-key-wrap"><input class="fl-ai-input" id="flAiKey" type="password" autocomplete="off" placeholder="請貼上你的 API Key"><button type="button" class="fl-ai-showkey" id="flAiShowKey">顯示</button></div>
+        <p class="fl-ai-note">金鑰沿用現有 FiveLens BYOK 架構，直接由你的瀏覽器連到所選 AI 官方 API，不會送到 FiveLens 伺服器。請勿在公用電腦保存金鑰。</p>
+      </div>
+      <div class="fl-ai-section">
+        <div class="fl-ai-row">
+          <div><div class="fl-ai-label"><span>③ 模型</span><small>可自行修改</small></div><input class="fl-ai-input" id="flAiModel" type="text" placeholder="例如：模型 ID"></div>
+          <div><div class="fl-ai-label"><span>④ 連線</span><small>設定後立即測試</small></div><button type="button" class="fl-ai-primary" id="flAiSaveTest" style="width:100%">測試並儲存</button></div>
+        </div>
+        <details class="fl-ai-advanced"><summary>進階：自訂 API Base URL（只有需要時才用）</summary><div class="fl-ai-row"><input class="fl-ai-input" id="flAiEndpoint" type="url" placeholder="留空使用官方端點"><div class="fl-ai-mini" style="display:flex;align-items:center">一般 OpenAI 相容服務可留空；NVIDIA／Agnes 等可依服務需要填寫。</div></div></details>
+        <div class="fl-ai-status" id="flAiStatus"><span class="fl-ai-dot"></span><span>尚未測試連線</span></div>
+      </div>
+      <div class="fl-ai-actions"><button type="button" class="fl-ai-secondary" id="flAiCancel">關閉</button><button type="button" class="fl-ai-primary" id="flAiStart" disabled>開始使用 AI</button></div>
+    </div>
+  </section>
+</div>
+
+<script id="fivelens-unified-ai-controller">
+(function(){
+  const modal=document.getElementById('flAiModal'); if(!modal) return;
+  const providerBox=document.getElementById('flAiProviders'), keyEl=document.getElementById('flAiKey'), modelEl=document.getElementById('flAiModel'), endpointEl=document.getElementById('flAiEndpoint');
+  const statusEl=document.getElementById('flAiStatus'), startBtn=document.getElementById('flAiStart'), providerLabel=document.getElementById('flAiProviderLabel');
+  let provider=localStorage.getItem('zmp_ai_provider')||'claude', ready=false;
+  if(!window.AI_PROVIDERS) return;
+  if(!AI_PROVIDERS[provider]) provider='claude';
+  function setStatus(text,kind){statusEl.className='fl-ai-status '+(kind||'');statusEl.innerHTML='<span class="fl-ai-dot"></span><span>'+text+'</span>';}
+  function load(){
+    const cfg=AI_PROVIDERS[provider]; const saved=window.FiveLensAIDecode(localStorage.getItem(cfg.keyStorage))||''; const savedModel=window.FiveLensAIGetSavedModel(cfg)||cfg.defaultModel||''; const endpoint=cfg.endpointStorage?(window.FiveLensAIDecode(localStorage.getItem(cfg.endpointStorage))||''):'';
+    keyEl.value=saved; modelEl.value=savedModel; endpointEl.value=endpoint; providerLabel.textContent=cfg.label; ready=!!saved; startBtn.disabled=!ready; setStatus(saved?'已找到本機設定，可直接測試':'請輸入 API Key 後測試','');
+    providerBox.querySelectorAll('.fl-ai-provider').forEach(b=>b.classList.toggle('active',b.dataset.provider===provider));
+  }
+  providerBox.innerHTML=Object.entries(AI_PROVIDERS).map(([k,c])=>'<button type="button" class="fl-ai-provider" data-provider="'+k+'">'+c.label+'</button>').join('');
+  providerBox.addEventListener('click',e=>{const b=e.target.closest('.fl-ai-provider');if(!b)return;provider=b.dataset.provider;localStorage.setItem('zmp_ai_provider',provider);load();});
+  function open(){load();modal.hidden=false;document.body.classList.add('modal-open');setTimeout(()=>keyEl.focus(),60)}
+  function close(){modal.hidden=true;document.body.classList.remove('modal-open')}
+  document.getElementById('flAiClose').addEventListener('click',close); document.getElementById('flAiCancel').addEventListener('click',close); modal.addEventListener('click',e=>{if(e.target===modal)close()});
+  document.getElementById('flAiShowKey').addEventListener('click',e=>{const show=keyEl.type==='password';keyEl.type=show?'text':'password';e.currentTarget.textContent=show?'隱藏':'顯示'});
+  document.getElementById('flAiSaveTest').addEventListener('click',async()=>{
+    const cfg=AI_PROVIDERS[provider], key=keyEl.value.trim(), model=modelEl.value.trim()||cfg.defaultModel||'', endpoint=endpointEl.value.trim();
+    if(!key){setStatus('請先輸入 API Key','err');keyEl.focus();return} if(cfg.needsModel && !model){setStatus('請輸入模型 ID','err');modelEl.focus();return}
+    const btn=document.getElementById('flAiSaveTest'); btn.disabled=true; setStatus('正在測試 API 連線…');
+    try{
+      const models=await window.FiveLensAIFetchModels(cfg,key,endpoint);
+      if(cfg.modelStorage) localStorage.setItem(cfg.modelStorage,window.FiveLensAIEncode(model)); localStorage.setItem(cfg.keyStorage,window.FiveLensAIEncode(key));
+      if(cfg.endpointStorage && endpoint) localStorage.setItem(cfg.endpointStorage,window.FiveLensAIEncode(endpoint)); else if(cfg.endpointStorage) localStorage.removeItem(cfg.endpointStorage);
+      localStorage.setItem('zmp_ai_provider',provider); ready=true; startBtn.disabled=false; setStatus('連線成功 · '+cfg.label+(models.length?' · 已驗證模型服務':' · API 可用'),'ok');
+      window.showFriendlyError?.('AI 設定完成，所有 AI 功能已共用這組設定。',{type:'success'});
+    }catch(err){console.error(err);ready=false;startBtn.disabled=true;setStatus('連線失敗：請確認 API Key、模型或端點設定','err');}
+    finally{btn.disabled=false}
+  });
+  startBtn.addEventListener('click',()=>{if(!ready)return;close();try{window.FiveLensOpenAIArea?.()}catch(e){window.showFriendlyError?.('AI 設定已完成。請從 AI 功能入口開始使用。',{type:'success'})}});
+  window.FiveLensOpenAISettings=open;
+  // 判斷 AI 智能區是否已完成設定：只要任一 AI 服務已有可解碼的 API Key，就視為已設定。
+  // 若目前 zmp_ai_provider 遺失／錯誤，但其他供應商已有 Key，自動切回已儲存的供應商，避免再次要求輸入 API Key。
+  window.FiveLensAIConfigured=()=>{
+    try{
+      const preferred=localStorage.getItem('zmp_ai_provider')||'';
+      const order=[];
+      if(preferred && AI_PROVIDERS[preferred]) order.push(preferred);
+      Object.keys(AI_PROVIDERS).forEach(k=>{if(!order.includes(k))order.push(k)});
+      for(const k of order){
+        const cfg=AI_PROVIDERS[k];
+        const raw=localStorage.getItem(cfg.keyStorage);
+        if(!raw) continue;
+        const decoded=Obfuscate.decode(raw);
+        if(decoded && String(decoded).trim()){
+          if(k!==preferred) localStorage.setItem('zmp_ai_provider',k);
+          return true;
+        }
+      }
+      return false;
+    }catch(err){
+      console.warn('[五象] AI 設定檢查失敗，改視為尚未設定：',err);
+      return false;
+    }
+  };
+  window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
+  load();
 })();
 </script>
 </body>

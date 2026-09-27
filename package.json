@@ -1,9 +1,9 @@
 {
-  "name": "zhenmingpan",
-  "version": "10.11.0",
+  "name": "fivelens-production",
   "private": true,
-  "description": "五象 FiveLens - Netlify 部署套件",
+  "version": "10.12.0",
   "dependencies": {
-    "@netlify/blobs": "*"
+    "@netlify/blobs": "latest",
+    "@netlify/identity": "latest"
   }
 }
