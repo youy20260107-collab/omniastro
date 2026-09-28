@@ -1284,6 +1284,9 @@ body.modal-open{overflow:hidden}
 @media(max-width:800px){.fl-guide-modal{width:98vw;max-height:95vh}.fl-guide-head{padding:14px 16px}.fl-guide-head h2{font-size:20px}.fl-guide-toolbar{padding:8px 16px}.fl-guide-body{padding:14px 16px 18px}.fl-guide-layout{grid-template-columns:1fr}.fl-guide-toc{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}.fl-guide-feature-grid{grid-template-columns:1fr}.fl-ai-modal{width:98vw}.fl-ai-body{padding:16px}.fl-ai-providers{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 
+<style id="fivelens-v101312-goal-fixes">
+.admin-profile-summary{margin:14px 0;padding:14px 16px;background:#f7f9fc;border:1px solid #dce4ee;border-radius:12px;color:#26364f}.admin-profile-summary>b,.admin-profile-summary>div:first-child{color:#173b70}.admin-profile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 18px;margin-top:9px;font-size:13px}.admin-profile-grid span{color:#68778c}.admin-profile-grid strong{color:#26364f}.fl-ai-input[readonly],#aiApiKey[readonly],#pfApiKey[readonly]{background:#f3f6fa;color:#40516b;cursor:not-allowed}.ai-change-key{margin-top:8px!important}@media(max-width:700px){.admin-profile-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <!-- ===== 登入門檻遮罩：未登入前蓋住全站功能 ===== -->
@@ -1356,7 +1359,7 @@ body.modal-open{overflow:hidden}
   var logoutBtn = document.getElementById('auth-logout-btn');
 
   function showGate(){
-    if (new URLSearchParams(location.search).get('mode') === 'test') { gate.hidden = true; document.body.style.overflow=''; userBar.hidden=true; return; }
+    // v10.13.12：正式版不再存在使用者測試模式，所有使用者一律走正式登入流程。
     gate.hidden = false;
     document.body.style.overflow = 'hidden';
     userBar.hidden = true;
@@ -1399,9 +1402,10 @@ body.modal-open{overflow:hidden}
   // 下次同一分頁再次觸發登入流程時會自動重試，不會被卡住。
   function recordLoginOnce(user){
     var flagOk = true;
-    try{ if (sessionStorage.getItem('zmp_login_logged_v1')) return; }
-    catch(e){ flagOk = false; }
     if (!user || typeof user.jwt !== 'function') return;
+    var flagKey = 'zmp_login_logged_v2_' + String(user.id || user.email || '').replace(/[^a-zA-Z0-9._-]/g,'_');
+    try{ if (sessionStorage.getItem(flagKey)) return; }
+    catch(e){ flagOk = false; }
     user.jwt().then(function(token){
       return fetch('/.netlify/functions/log-login', {
         method: 'POST',
@@ -1409,7 +1413,7 @@ body.modal-open{overflow:hidden}
       });
     }).then(function(res){
       if (res && res.ok && flagOk) {
-        try{ sessionStorage.setItem('zmp_login_logged_v1', '1'); }catch(e){}
+        try{ sessionStorage.setItem(flagKey, '1'); }catch(e){}
       }
     }).catch(function(){ /* 安靜失敗，不影響使用者 */ });
   }
@@ -1547,12 +1551,12 @@ body.modal-open{overflow:hidden}
         return;
       }
       var data = await res.json();
-      var logs = data.records || [];
+      var logs = Array.isArray(data.records) ? data.records : (Array.isArray(data.logs) ? data.logs : []);
       logTbody.innerHTML = '';
       logs.forEach(function(r){
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td>' + fmtTime(r.ts) + '</td>' +
+          '<td>' + fmtTime(r.ts || r.loginAt) + '</td>' +
           '<td class="email-cell">' + (r.email || '') + (r.name ? '（' + r.name + '）' : '') + '</td>' +
           '<td>' + (r.provider || '') + '</td>';
         logTbody.appendChild(tr);
@@ -1596,13 +1600,15 @@ body.modal-open{overflow:hidden}
         alldataStatus.textContent = '⚠️ 讀取失敗（狀態碼 ' + res.status + '），請確認此網站已部署 get-all-user-charts.js。';
         return;
       }
-      var users = await res.json();
-      if (!Array.isArray(users) || users.length === 0) {
-        alldataStatus.textContent = '目前還沒有任何使用者存過命盤。';
+      var payload = await res.json();
+      var users = Array.isArray(payload) ? payload : (Array.isArray(payload.users) ? payload.users : []);
+      if (users.length === 0) {
+        alldataStatus.textContent = '目前還沒有任何使用者資料。';
         return;
       }
-      alldataStatus.textContent = '共 ' + users.length + ' 位使用者有存過命盤';
+      alldataStatus.textContent = '共 ' + users.length + ' 位使用者';
       alldataList.innerHTML = users.map(function(u){
+        var p = u.profile || {};
         var rows = (u.charts||[]).map(function(c){
           return '<tr>' +
             '<td>' + escapeHtmlAdmin(c.surname) + escapeHtmlAdmin(c.givenName||'') + '</td>' +
@@ -1612,9 +1618,20 @@ body.modal-open{overflow:hidden}
             '<td>' + escapeHtmlAdmin(c.savedAt ? new Date(c.savedAt).toLocaleString('zh-TW',{hour12:false}) : '') + '</td>' +
           '</tr>';
         }).join('');
+        var profileRows = p && (p.surname || p.birthDate || p.county) ?
+          '<div class="admin-profile-summary"><div><b>基本資料</b></div>' +
+          '<div class="admin-profile-grid">' +
+          '<span>姓名：<strong>' + escapeHtmlAdmin((p.surname||'')+(p.givenName||'')) + '</strong></span>' +
+          '<span>性別：<strong>' + (p.gender==='F'?'女':p.gender==='M'?'男':'—') + '</strong></span>' +
+          '<span>出生日期：<strong>' + escapeHtmlAdmin(p.birthDate||'—') + '</strong></span>' +
+          '<span>出生時間：<strong>' + (p.unknownHour?'時辰未知':escapeHtmlAdmin(p.birthTime||'—')) + '</strong></span>' +
+          '<span>出生地：<strong>' + escapeHtmlAdmin((p.county||'')+(p.district||'')) + '</strong></span>' +
+          '<span>經緯度：<strong>' + escapeHtmlAdmin([p.longitude,p.latitude].filter(function(v){return v!==undefined && v!==null && v!=='';}).join(' / ') || '—') + '</strong></span>' +
+          '</div></div>' : '<p class="log-panel-status">此帳號尚未完成基本資料。</p>';
         return '<details class="user-data-card">' +
-          '<summary><span class="udc-email">' + escapeHtmlAdmin(u.email) + '</span>' +
-          '<span class="udc-meta">' + u.chartCount + ' 筆・最後更新 ' + (u.updatedAt ? new Date(u.updatedAt).toLocaleString('zh-TW',{hour12:false}) : '—') + '</span></summary>' +
+          '<summary><span class="udc-email">' + escapeHtmlAdmin(u.email || p.email || '未提供 Email') + '</span>' +
+          '<span class="udc-meta">' + (u.chartCount||0) + ' 筆命盤・' + (u.profileComplete?'基本資料已完成':'基本資料未完成') + '</span></summary>' +
+          profileRows +
           (rows ? ('<table class="log-table"><thead><tr><th>姓名</th><th>性別</th><th>出生時間</th><th>備註</th><th>存檔時間</th></tr></thead><tbody>' + rows + '</tbody></table>')
                 : '<p class="log-panel-status">此帳號目前沒有存任何命盤。</p>') +
           '</details>';
@@ -1647,7 +1664,7 @@ body.modal-open{overflow:hidden}
     </nav>
     <div class="nav-actions">
       <div class="version-chips-wrap" id="versionChipsWrap">
-<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.13.11 更新 <span class="caret">▾</span></button>
+<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.13.12 更新 <span class="caret">▾</span></button>
 <div aria-label="版本更新細節" class="version-chips-popover" id="versionChipsPopover" role="region">
 <span class="v-chip">🗂️ v10.11：參考業界標準RWD側邊選單架構重新設計——桌機改為「常駐側欄，手動點擊收合鈕收合/展開」並記住使用者選擇，取代先前依賴滑鼠停留的做法；手機/平板改為「漢堡選單滑出式抽屜」，支援點背景、Esc鍵、切換分頁後自動關閉，桌機與手機統一為同一套選單元件</span>
 <span class="v-chip">🔐 新增 Google 帳號登入門檻，登入後才能使用全站功能；「回報結果疑慮」信箱整合為「建議信箱」，並改用 Gmail 網頁版連結（自動判斷登入狀態）</span>
@@ -7515,6 +7532,27 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   };
   window.AI_PROVIDERS = AI_PROVIDERS;
   const AI_PROVIDER_KEY = 'zmp_ai_provider';
+  // v10.13.12：全站 AI 功能共用同一份已儲存的 BYOK 設定。若目前選取的供應商沒有 Key，
+  // 自動尋找其他已設定供應商，避免 AI 白話追問、手相面相等功能再次要求貼 Key。
+  window.FiveLensGetConfiguredAI = function(){
+    try{
+      const preferred=localStorage.getItem(AI_PROVIDER_KEY)||'';
+      const order=[];
+      if(preferred && AI_PROVIDERS[preferred]) order.push(preferred);
+      Object.keys(AI_PROVIDERS).forEach(k=>{if(!order.includes(k))order.push(k)});
+      for(const k of order){
+        const cfg=AI_PROVIDERS[k];
+        const raw=localStorage.getItem(cfg.keyStorage);
+        if(!raw) continue;
+        const key=Obfuscate.decode(raw);
+        if(key && String(key).trim()){
+          if(k!==preferred) localStorage.setItem(AI_PROVIDER_KEY,k);
+          return {provider:k,cfg,key:String(key).trim(),model:cfg.modelStorage?(Obfuscate.decode(localStorage.getItem(cfg.modelStorage))||cfg.defaultModel||''):(cfg.defaultModel||''),endpoint:cfg.endpointStorage?(Obfuscate.decode(localStorage.getItem(cfg.endpointStorage))||''):''};
+        }
+      }
+    }catch(e){ console.warn('[五象] AI 共用設定讀取失敗：',e); }
+    return null;
+  };
   const AI_LIMITS = Object.freeze({ RPM:14, RPD:49, TPM:19000, MAX_QUEUE_WAIT_MS:90000, TIMEOUT_MS:60000 });
   const AI_USAGE_KEY = 'fivelens_ai_usage_v1';
   let aiRequestQueue = Promise.resolve();
@@ -7671,7 +7709,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const chartSummary = buildChartSummary(ctx);
     let chatHistory = []; // [{role,content}]
     let aiBusy = false;
-    let currentProvider = localStorage.getItem(AI_PROVIDER_KEY) || 'claude';
+    const sharedAI = window.FiveLensGetConfiguredAI?.();
+    let currentProvider = sharedAI?.provider || localStorage.getItem(AI_PROVIDER_KEY) || 'claude';
     if(!AI_PROVIDERS[currentProvider]) currentProvider = 'claude';
 
     function renderProviderFields(){
@@ -7682,8 +7721,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       fieldsBox.innerHTML = `
         <div class="field"><label>${cfg.keyLabel}</label>
           <div class="ai-key-row">
-            <input type="password" id="aiApiKey" placeholder="${cfg.keyPlaceholder}" value="${escapeHtml(savedKey)}">
-            <label><input type="checkbox" id="aiKeyRemember" ${savedKey?'checked':''}> 記住金鑰（本機儲存，已加入輕量混淆，仍建議公用電腦不要勾選）</label>
+            <input type="password" id="aiApiKey" placeholder="${cfg.keyPlaceholder}" value="${escapeHtml(savedKey)}" ${savedKey?'readonly':''}>
+            <label><input type="checkbox" id="aiKeyRemember" checked> ${savedKey?'已沿用 AI 智能設定中的 API Key，不需重新輸入':'儲存 API Key（本機瀏覽器）'}</label>
+            ${savedKey?'<button type="button" class="btn-mini ai-change-key" id="aiChangeKey">前往 AI 智能設定更換</button>':''}
           </div>
         </div>
         ${cfg.needsEndpoint ? `<div class="field"><label>${cfg.endpointOptional?'Base URL（選填，留空使用官方端點）':'API 端點網址'}</label><div class="ai-key-row"><input type="text" class="ai-endpoint-input" id="aiEndpoint" placeholder="${cfg.endpointPlaceholder}" value="${escapeHtml(savedEndpoint)}"></div></div>` : ''}
@@ -7712,6 +7752,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         });
       }
     }
+    const changeKeyBtn = fieldsBox.querySelector('#aiChangeKey');
+    if(changeKeyBtn) changeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettings?.());
     function setProvider(key){
       currentProvider = key;
       localStorage.setItem(AI_PROVIDER_KEY, key);
@@ -8577,7 +8619,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const fieldsBox = box.querySelector('#pfProviderFields');
     const resultBox = box.querySelector('#pfResult');
     const submitBtn = box.querySelector('#pfSubmitBtn');
-    let currentProvider = localStorage.getItem(AI_PROVIDER_KEY) || 'claude';
+    const sharedAI = window.FiveLensGetConfiguredAI?.();
+    let currentProvider = sharedAI?.provider || localStorage.getItem(AI_PROVIDER_KEY) || 'claude';
     if(!AI_PROVIDERS[currentProvider]) currentProvider = 'claude';
     let palmDataUrl = null, faceDataUrl = null;
 
@@ -8590,8 +8633,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       fieldsBox.innerHTML = `
         <div class="field"><label>${cfg.keyLabel}</label>
           <div class="ai-key-row">
-            <input type="password" id="pfApiKey" placeholder="${cfg.keyPlaceholder}" value="${escapeHtml(savedKey)}">
-            <label><input type="checkbox" id="pfKeyRemember" ${savedKey?'checked':''}> 記住金鑰（本機儲存，已加入輕量混淆）</label>
+            <input type="password" id="pfApiKey" placeholder="${cfg.keyPlaceholder}" value="${escapeHtml(savedKey)}" ${savedKey?'readonly':''}>
+            <label><input type="checkbox" id="pfKeyRemember" checked> ${savedKey?'已沿用 AI 智能設定中的 API Key，不需重新輸入':'儲存 API Key（本機瀏覽器）'}</label>
+            ${savedKey?'<button type="button" class="btn-mini ai-change-key" id="pfChangeKey">前往 AI 智能設定更換</button>':''}
           </div>
         </div>
         ${cfg.needsEndpoint ? `<div class="field"><label>${cfg.endpointOptional?'Base URL（選填，留空使用官方端點）':'API 端點網址'}</label><div class="ai-key-row"><input type="text" id="pfEndpoint" placeholder="${cfg.endpointPlaceholder}" value="${escapeHtml(savedEndpoint)}"></div></div>` : ''}
@@ -8599,6 +8643,8 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
         ${visionNote===false ? `<p class="ai-qa-hint" style="color:var(--crimson-soft);">⚠️ ${cfg.label} 預設模型不支援影像辨識，此功能可能無法使用。</p>`
           : visionNote===null ? `<p class="ai-qa-hint" style="color:var(--crimson-soft);">⚠️ ${cfg.label} 是否支援影像辨識，取決於你填入的模型名稱是否為具備視覺能力的版本，請自行確認。</p>` : ''}
       `;
+      const pfChangeKeyBtn = fieldsBox.querySelector('#pfChangeKey');
+      if(pfChangeKeyBtn) pfChangeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettings?.());
       const pfModelEl = fieldsBox.querySelector('#pfModel');
       if(pfModelEl) pfModelEl.value = savedModel || cfg.defaultModel || '';
       const pfLoadBtn = fieldsBox.querySelector('#pfLoadModels');
@@ -12414,7 +12460,22 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     setTimeout(setDistrict,100);
     updateProgress();
   }
-  function syncMainForm(p){ if(!p)return; $('surname').value=p.surname||''; $('givenName').value=p.givenName||''; const r=document.querySelector('input[name="gender"][value="'+(p.gender||'M')+'"]'); if(r)r.checked=true; $('birthDate').value=p.birthDate||''; $('birthTime').value=p.birthTime||'12:00'; $('unknownHour').checked=!!p.unknownHour; if($('longitude'))$('longitude').value=Number.isFinite(p.longitude)?p.longitude:121.5; if($('latitude'))$('latitude').value=Number.isFinite(p.latitude)?p.latitude:25.03; }
+  function syncMainForm(p){
+    if(!p)return;
+    $('surname').value=p.surname||'';
+    $('givenName').value=p.givenName||'';
+    const r=document.querySelector('input[name="gender"][value="'+(p.gender||'M')+'"]'); if(r){r.checked=true;document.querySelectorAll('#genderRow .radio-pill').forEach(x=>x.classList.toggle('active',x.querySelector('input')===r));}
+    $('birthDate').value=p.birthDate||'';
+    $('birthTime').value=p.birthTime||'12:00';
+    $('unknownHour').checked=!!p.unknownHour;
+    if($('longitude'))$('longitude').value=Number.isFinite(p.longitude)?p.longitude:121.5;
+    if($('latitude'))$('latitude').value=Number.isFinite(p.latitude)?p.latitude:25.03;
+    if($('countySelect') && p.county){
+      $('countySelect').value=p.county;
+      $('countySelect').dispatchEvent(new Event('change',{bubbles:true}));
+      setTimeout(()=>{ if($('districtSelect')) $('districtSelect').value=p.district||''; },0);
+    }
+  }
   function openGate(reason){
     backdrop.hidden=false; document.body.classList.add('modal-open'); fillForm(profile||{});
     $('profileGateCancel').style.display=complete(profile)?'inline-block':'none';
@@ -12438,7 +12499,22 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     return complete(p);
   }
   form.addEventListener('input',updateProgress); form.addEventListener('change',updateProgress);
-  form.addEventListener('submit',async e=>{e.preventDefault();setError('');const ok=await saveProfile(fields());if(ok){backdrop.hidden=true;document.body.classList.remove('modal-open');if(badge)badge.textContent='已登入・資料完成';window.showFriendlyError?.('基本資料已完成，核心功能已解鎖。',{type:'success'});}});
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();setError('');
+    const ok=await saveProfile(fields());
+    if(ok){
+      backdrop.hidden=true;
+      document.body.classList.remove('modal-open');
+      if(badge)badge.textContent='已登入・資料完成';
+      // v10.13.12：基本資料視窗就是唯一的「資料儲存」入口；儲存成功後直接同步主排盤表單，
+      // 使用者不需要再次輸入或再次「送出基本資料」，下一步只需按「開始排盤」進行演算。
+      const birthForm=document.getElementById('birthForm');
+      const formSection=document.getElementById('form-section');
+      if(formSection) formSection.classList.remove('hidden-until-cta');
+      window.showFriendlyError?.('基本資料已儲存並同步到排盤表單；下一步直接按「開始排盤」即可，不需再次輸入。',{type:'success'});
+      setTimeout(()=>document.getElementById('birthDate')?.focus(),120);
+    }
+  });
   closeBtn.addEventListener('click',closeGate); cancelBtn.addEventListener('click',closeGate);
   titlebar.addEventListener('mousedown',e=>{if(e.target.closest('button'))return;dragging=true;const r=win.getBoundingClientRect();dx=e.clientX-r.left;dy=e.clientY-r.top;win.style.position='fixed';win.style.margin='0';win.style.left=r.left+'px';win.style.top=r.top+'px';});
   window.addEventListener('mousemove',e=>{if(!dragging)return;const w=win.getBoundingClientRect();win.style.left=Math.max(8,Math.min(window.innerWidth-w.width-8,e.clientX-dx))+'px';win.style.top=Math.max(8,Math.min(window.innerHeight-w.height-8,e.clientY-dy))+'px';});
@@ -12573,28 +12649,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   window.FiveLensOpenAISettings=open;
   // 判斷 AI 智能區是否已完成設定：只要任一 AI 服務已有可解碼的 API Key，就視為已設定。
   // 若目前 zmp_ai_provider 遺失／錯誤，但其他供應商已有 Key，自動切回已儲存的供應商，避免再次要求輸入 API Key。
-  window.FiveLensAIConfigured=()=>{
-    try{
-      const preferred=localStorage.getItem('zmp_ai_provider')||'';
-      const order=[];
-      if(preferred && AI_PROVIDERS[preferred]) order.push(preferred);
-      Object.keys(AI_PROVIDERS).forEach(k=>{if(!order.includes(k))order.push(k)});
-      for(const k of order){
-        const cfg=AI_PROVIDERS[k];
-        const raw=localStorage.getItem(cfg.keyStorage);
-        if(!raw) continue;
-        const decoded=Obfuscate.decode(raw);
-        if(decoded && String(decoded).trim()){
-          if(k!==preferred) localStorage.setItem('zmp_ai_provider',k);
-          return true;
-        }
-      }
-      return false;
-    }catch(err){
-      console.warn('[五象] AI 設定檢查失敗，改視為尚未設定：',err);
-      return false;
-    }
-  };
+  window.FiveLensAIConfigured=()=>!!window.FiveLensGetConfiguredAI?.();
   window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal.hidden)close()});
   load();
 })();
