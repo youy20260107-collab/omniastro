@@ -6,9 +6,18 @@ export async function requireUser() {
   return { user, response: null };
 }
 
+export function userEmail(user) {
+  return String(user?.email || user?.userMetadata?.email || user?.user_metadata?.email || '').trim().toLowerCase();
+}
+
 export function isAdmin(user) {
-  const email = String(user?.email || '').trim().toLowerCase();
-  return email === 'felix670131@gmail.com' || (Array.isArray(user?.roles) && user.roles.includes('admin'));
+  const email = userEmail(user);
+  const roles = [
+    ...(Array.isArray(user?.roles) ? user.roles : []),
+    ...(Array.isArray(user?.appMetadata?.roles) ? user.appMetadata.roles : []),
+    ...(Array.isArray(user?.app_metadata?.roles) ? user.app_metadata.roles : [])
+  ].map(v => String(v).toLowerCase());
+  return email === 'felix670131@gmail.com' || roles.includes('admin');
 }
 
 export function json(data, status = 200) {

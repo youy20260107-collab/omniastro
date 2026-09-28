@@ -1359,7 +1359,7 @@ body.modal-open{overflow:hidden}
   var logoutBtn = document.getElementById('auth-logout-btn');
 
   function showGate(){
-    // v10.13.12：正式版不再存在使用者測試模式，所有使用者一律走正式登入流程。
+    // v10.13.13：正式版不再存在使用者測試模式，所有使用者一律走正式登入流程。
     gate.hidden = false;
     document.body.style.overflow = 'hidden';
     userBar.hidden = true;
@@ -1396,7 +1396,7 @@ body.modal-open{overflow:hidden}
 
     // v10.2 新增：登入成功後記一筆登入紀錄（呼叫 log-login.js，不是自動觸發的
     // identity-login，所以就算這支失敗也絕對不會影響登入本身）。
-    recordLoginOnce(user);
+    // v10.13.13：登入紀錄改由 Netlify Identity userLogin 事件統一寫入，避免前端重複記錄。
   }
   // 每個瀏覽器分頁只記一次，成功才設旗標；失敗（含網路問題）不設旗標，
   // 下次同一分頁再次觸發登入流程時會自動重試，不會被卡住。
@@ -1664,7 +1664,7 @@ body.modal-open{overflow:hidden}
     </nav>
     <div class="nav-actions">
       <div class="version-chips-wrap" id="versionChipsWrap">
-<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.13.12 更新 <span class="caret">▾</span></button>
+<button aria-controls="versionChipsPopover" aria-expanded="false" class="v-badge-btn" id="versionBadgeBtn" type="button">v10.13.13 更新 <span class="caret">▾</span></button>
 <div aria-label="版本更新細節" class="version-chips-popover" id="versionChipsPopover" role="region">
 <span class="v-chip">🗂️ v10.11：參考業界標準RWD側邊選單架構重新設計——桌機改為「常駐側欄，手動點擊收合鈕收合/展開」並記住使用者選擇，取代先前依賴滑鼠停留的做法；手機/平板改為「漢堡選單滑出式抽屜」，支援點背景、Esc鍵、切換分頁後自動關閉，桌機與手機統一為同一套選單元件</span>
 <span class="v-chip">🔐 新增 Google 帳號登入門檻，登入後才能使用全站功能；「回報結果疑慮」信箱整合為「建議信箱」，並改用 Gmail 網頁版連結（自動判斷登入狀態）</span>
@@ -5431,6 +5431,9 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const activeBtn = document.querySelector('.tab-btn.active');
     const activeTabKey = activeBtn ? activeBtn.dataset.tab : 'bazi';
     renderTabSafely(activeTabKey, ctx);
+    // v10.13.13：開始排盤後把目前已註冊的計算結果一次完整呈現；使用者不必逐頁等待第一次渲染。
+    // 仍保留各頁籤自己的錯誤邊界，單一功能異常不會阻斷其他結果。
+    Object.keys(TAB_RENDERERS).forEach(k=>{ if(k!==activeTabKey) renderTabSafely(k, ctx); });
 
     const resultEl = document.getElementById('result');
     if(resultEl.scrollIntoView){ resultEl.scrollIntoView({behavior:'smooth', block:'start'}); }
@@ -7532,7 +7535,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   };
   window.AI_PROVIDERS = AI_PROVIDERS;
   const AI_PROVIDER_KEY = 'zmp_ai_provider';
-  // v10.13.12：全站 AI 功能共用同一份已儲存的 BYOK 設定。若目前選取的供應商沒有 Key，
+  // v10.13.13：全站 AI 功能共用同一份已儲存的 BYOK 設定。若目前選取的供應商沒有 Key，
   // 自動尋找其他已設定供應商，避免 AI 白話追問、手相面相等功能再次要求貼 Key。
   window.FiveLensGetConfiguredAI = function(){
     try{
@@ -7753,7 +7756,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       }
     }
     const changeKeyBtn = fieldsBox.querySelector('#aiChangeKey');
-    if(changeKeyBtn) changeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettings?.());
+    if(changeKeyBtn) changeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettingsEdit?.());
     function setProvider(key){
       currentProvider = key;
       localStorage.setItem(AI_PROVIDER_KEY, key);
@@ -8644,7 +8647,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
           : visionNote===null ? `<p class="ai-qa-hint" style="color:var(--crimson-soft);">⚠️ ${cfg.label} 是否支援影像辨識，取決於你填入的模型名稱是否為具備視覺能力的版本，請自行確認。</p>` : ''}
       `;
       const pfChangeKeyBtn = fieldsBox.querySelector('#pfChangeKey');
-      if(pfChangeKeyBtn) pfChangeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettings?.());
+      if(pfChangeKeyBtn) pfChangeKeyBtn.addEventListener('click',()=>window.FiveLensOpenAISettingsEdit?.());
       const pfModelEl = fieldsBox.querySelector('#pfModel');
       if(pfModelEl) pfModelEl.value = savedModel || cfg.defaultModel || '';
       const pfLoadBtn = fieldsBox.querySelector('#pfLoadModels');
@@ -12492,10 +12495,36 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     const user=window.netlifyIdentity?.currentUser?.(); if(!user){setError('請先登入 Google 帳號。');return false;}
     try{const res=await fetch('/.netlify/functions/profile',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+await user.jwt()},body:JSON.stringify(p)}); const data=await res.json(); if(!res.ok)throw new Error(data.error||'儲存失敗'); profile=data.profile; window.FiveLensProfile=profile; syncMainForm(profile); return true;}catch(e){setError(e.message||'基本資料儲存失敗。');return false;}
   }
+  function runAllFromProfile(p){
+    if(!p || !complete(p)) return false;
+    const birthForm=document.getElementById('birthForm');
+    const formSection=document.getElementById('form-section');
+    if(formSection) formSection.classList.remove('hidden-until-cta');
+    const useTrueSolarTime=document.getElementById('useTrueSolar')?.checked ?? true;
+    const lateZiSplitsDay=document.getElementById('lateZiSplitsDay')?.checked ?? false;
+    const [y,m,d]=String(p.birthDate).split('-').map(Number);
+    let [hh,mm]=String(p.birthTime||'12:00').split(':').map(Number);
+    if(p.unknownHour){hh=12;mm=0;}
+    try{
+      document.getElementById('result').style.display='none';
+      document.getElementById('loadingBox').classList.add('active');
+      runAll({surname:p.surname,givenName:p.givenName,gender:p.gender,y,m,d,hh,mm,unknownHour:!!p.unknownHour,longitude:Number.isFinite(Number(p.longitude))?Number(p.longitude):121.5,latitude:Number.isFinite(Number(p.latitude))?Number(p.latitude):25.03,useTrueSolarTime,lateZiSplitsDay});
+      // v10.13.13：已有完整基本資料的使用者登入後直接完成排盤，不再要求第二次送出。
+      // 首頁「開始排盤」與基本資料視窗共用同一套資料來源。
+      return true;
+    }catch(err){
+      console.error('[五象] 自動排盤失敗：',err);
+      showFriendlyError?.('已載入基本資料，但自動排盤時發生問題；請按「開始排盤」重試。');
+      return false;
+    }finally{ document.getElementById('loadingBox')?.classList.remove('active'); }
+  }
   async function ensureProfile(){
     const p=await loadProfile();
     if(!complete(p)) openGate('完成基本資料後開始使用');
-    else {if(badge)badge.textContent='已登入・資料完成';}
+    else {
+      if(badge)badge.textContent='已登入・資料完成';
+      setTimeout(()=>runAllFromProfile(p),80);
+    }
     return complete(p);
   }
   form.addEventListener('input',updateProgress); form.addEventListener('change',updateProgress);
@@ -12506,13 +12535,13 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       backdrop.hidden=true;
       document.body.classList.remove('modal-open');
       if(badge)badge.textContent='已登入・資料完成';
-      // v10.13.12：基本資料視窗就是唯一的「資料儲存」入口；儲存成功後直接同步主排盤表單，
+      // v10.13.13：基本資料視窗就是唯一的「資料儲存」入口；儲存成功後直接同步主排盤表單，
       // 使用者不需要再次輸入或再次「送出基本資料」，下一步只需按「開始排盤」進行演算。
       const birthForm=document.getElementById('birthForm');
       const formSection=document.getElementById('form-section');
       if(formSection) formSection.classList.remove('hidden-until-cta');
-      window.showFriendlyError?.('基本資料已儲存並同步到排盤表單；下一步直接按「開始排盤」即可，不需再次輸入。',{type:'success'});
-      setTimeout(()=>document.getElementById('birthDate')?.focus(),120);
+      window.showFriendlyError?.('基本資料已儲存，現在直接開始排盤，不需再次輸入。',{type:'success'});
+      setTimeout(()=>runAllFromProfile(profile),120);
     }
   });
   closeBtn.addEventListener('click',closeGate); cancelBtn.addEventListener('click',closeGate);
@@ -12628,7 +12657,17 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   }
   providerBox.innerHTML=Object.entries(AI_PROVIDERS).map(([k,c])=>'<button type="button" class="fl-ai-provider" data-provider="'+k+'">'+c.label+'</button>').join('');
   providerBox.addEventListener('click',e=>{const b=e.target.closest('.fl-ai-provider');if(!b)return;provider=b.dataset.provider;localStorage.setItem('zmp_ai_provider',provider);load();});
-  function open(){load();modal.hidden=false;document.body.classList.add('modal-open');setTimeout(()=>keyEl.focus(),60)}
+  function open(forceEdit=false){
+    // v10.13.13：已有可用 API Key 時，正常進入 AI 智能區直接跳過 API Key 設定畫面。
+    // 只有使用者從「更換 API Key」明確進入時，才強制顯示設定頁。
+    if(!forceEdit && window.FiveLensGetConfiguredAI?.()){
+      modal.hidden=true; document.body.classList.remove('modal-open');
+      setTimeout(()=>window.FiveLensOpenAIArea?.(),0);
+      return;
+    }
+    load();modal.hidden=false;document.body.classList.add('modal-open');
+    setTimeout(()=>{if(keyEl && !keyEl.readOnly) keyEl.focus(); else document.getElementById('flAiStart')?.focus()},60);
+  }
   function close(){modal.hidden=true;document.body.classList.remove('modal-open')}
   document.getElementById('flAiClose').addEventListener('click',close); document.getElementById('flAiCancel').addEventListener('click',close); modal.addEventListener('click',e=>{if(e.target===modal)close()});
   document.getElementById('flAiShowKey').addEventListener('click',e=>{const show=keyEl.type==='password';keyEl.type=show?'text':'password';e.currentTarget.textContent=show?'隱藏':'顯示'});
@@ -12647,6 +12686,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   });
   startBtn.addEventListener('click',()=>{if(!ready)return;close();try{window.FiveLensOpenAIArea?.()}catch(e){window.showFriendlyError?.('AI 設定已完成。請從 AI 功能入口開始使用。',{type:'success'})}});
   window.FiveLensOpenAISettings=open;
+  window.FiveLensOpenAISettingsEdit=()=>open(true);
   // 判斷 AI 智能區是否已完成設定：只要任一 AI 服務已有可解碼的 API Key，就視為已設定。
   // 若目前 zmp_ai_provider 遺失／錯誤，但其他供應商已有 Key，自動切回已儲存的供應商，避免再次要求輸入 API Key。
   window.FiveLensAIConfigured=()=>!!window.FiveLensGetConfiguredAI?.();

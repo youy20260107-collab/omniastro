@@ -1,7 +1,7 @@
 {
   "name": "fivelens-production",
   "private": true,
-  "version": "10.13.12",
+  "version": "10.13.13",
   "dependencies": {
     "@netlify/blobs": "latest",
     "@netlify/identity": "latest"
