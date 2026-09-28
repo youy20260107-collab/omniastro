@@ -4365,18 +4365,10 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     showFriendlyError(msg);
   }
   window.addEventListener('error', function(e){
-    // v10.13.14：window error 也會收到圖片／外部資源載入失敗事件。舊版把所有 error
-    // 都當成 JavaScript 例外，因此只要任何資源晚一點載入失敗，就會誤跳「預期外的問題」，
-    // 造成使用者誤以為每個功能都壞掉。只有真正的 JS Runtime Error 才進入全域錯誤提示。
-    if(e && e.target && e.target !== window){
-      console.warn('[五象 FiveLens][資源載入警告]', e.target.src || e.target.href || e.target);
-      return;
-    }
-    const err = e && (e.error || e.message);
-    console.error('[五象 FiveLens][全域安全網] 未攔截的錯誤：', err, e?.filename || '', e?.lineno || '', e?.colno || '');
-    window.__FiveLensLastError = { message:String(err || '未知 JavaScript 錯誤'), file:e?.filename || '', line:e?.lineno || 0, col:e?.colno || 0, at:new Date().toISOString() };
+    console.error('[五象 FiveLens][全域安全網] 未攔截的錯誤：', e.error || e.message, e.filename || '', e.lineno || '', e.colno || '');
+    // 導覽按鈕由專用導覽控制器負責錯誤處理；不要再由全域安全網覆蓋成通用錯誤提示。
     if(window.__FiveLensNavigationBusy){ e.preventDefault(); return; }
-    _throttledGlobalErrToast('功能執行時發生程式錯誤，請重新整理後再試；若持續發生，請提供瀏覽器主控台錯誤訊息。');
+    _throttledGlobalErrToast('這個操作剛才發生了預期外的問題，畫面可能沒有完成更新；可以重新整理頁面後再試一次，若持續發生歡迎透過頁尾聯絡信箱回報。');
   });
   window.addEventListener('unhandledrejection', function(e){
     // 導覽／登入元件可能產生由第三方 Promise 傳出的 rejection。
@@ -4739,8 +4731,6 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
   const REPORT_MERGED_TABS = ['report','aiqa','poster','timeline','feedback'];
   function activateTab(btn, opts){
     opts = opts || {};
-    if(!btn || !btn.dataset || !btn.dataset.tab){ return false; }
-    try{
     document.querySelectorAll('.tab-btn').forEach(b=>{
       b.classList.remove('active');
       b.setAttribute('aria-selected','false');
@@ -4782,13 +4772,6 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
       if(lastCtx) renderTabSafely(btn.dataset.tab, lastCtx); // v8.2：頁籤延遲渲染，切換到哪一頁才計算哪一頁
     }
     if(opts.focus) btn.focus();
-    return true;
-    }catch(err){
-      console.error('[五象] 功能頁籤切換失敗：', err, btn?.dataset?.tab);
-      window.__FiveLensLastError = {message:String(err?.message || err), feature:btn?.dataset?.tab || '', at:new Date().toISOString()};
-      window.showFriendlyError?.('「'+(btn.textContent?.trim() || '此功能')+'」目前無法開啟，請重新整理後再試。');
-      return false;
-    }
   }
   const mobileTabSelect = document.getElementById('tabMobileSelect');
   tabBtnList.forEach((btn, idx)=>{
@@ -12340,19 +12323,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     dirDesc.textContent=isAI?'以下 AI 功能會在完成排盤後，依目前設定與 API 額度提供服務。':'完整列出目前網站的 28 項功能；選擇後會直接跳到對應功能。';
     let list=isAI?allTabs.filter(x=>['aiqa','palmface','marketing','poster','report'].includes(x.id)):allTabs;
     dirGrid.innerHTML=list.map((x,i)=>`<button type="button" class="nav-directory-item" data-dir-tab="${x.id}" data-dir-group="${x.group}"><span class="num">${String(i+1).padStart(2,'0')}</span><span>${x.label}<small style="display:block;color:#7a879d;font-weight:500;margin-top:3px">${x.groupLabel}</small></span></button>`).join('');
-    dirGrid.querySelectorAll('[data-dir-tab]').forEach(btn=>btn.addEventListener('click',()=>{
-      window.__FiveLensNavigationBusy=true;
-      try{
-        const ok=activateTab(btn.dataset.dirGroup,btn.dataset.dirTab);
-        if(!ok)return;
-        dirBackdrop.hidden=true;document.body.classList.remove('modal-open');
-        if(!isResultReady()){setTimeout(()=>window.showFriendlyError?.('請先完成出生資料排盤，才能查看此功能的實際結果。'),300)}
-      }catch(err){
-        console.error('[五象] 功能目錄開啟失敗：',err);
-        window.__FiveLensLastError={message:String(err?.message||err),feature:btn.dataset.dirTab,at:new Date().toISOString()};
-        window.showFriendlyError?.('此功能目前無法開啟，請重新整理後再試。');
-      }finally{setTimeout(()=>{window.__FiveLensNavigationBusy=false},500)}
-    }));
+    dirGrid.querySelectorAll('[data-dir-tab]').forEach(btn=>btn.addEventListener('click',()=>{const ok=activateTab(btn.dataset.dirGroup,btn.dataset.dirTab);if(!ok)return;dirBackdrop.hidden=true;document.body.classList.remove('modal-open');if(!isResultReady()){setTimeout(()=>window.showFriendlyError?.('請先完成出生資料排盤，才能查看此功能的實際結果。'),300)}}));
     dirBackdrop.hidden=false;document.body.classList.add('modal-open');setTimeout(()=>dirClose?.focus(),0);
   }
   function openAbout(){
@@ -12396,7 +12367,6 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     e.preventDefault();
     const key=card.dataset.visualNav;
     if(key==='ai'){
-      window.__FiveLensNavigationBusy=true;
       try{ if(window.FiveLensAIConfigured?.()){window.FiveLensOpenAIArea?.();}else{window.FiveLensOpenAISettings?.();} }
       catch(err){console.error('[五象] AI 視覺入口開啟失敗：',err);window.showFriendlyError?.('AI 智能區目前無法開啟，請稍後再試。');}
     }else if(key==='features'){
@@ -12408,17 +12378,7 @@ if (typeof module !== 'undefined') { module.exports = FortuneEngine; }
     if((e.key==='Enter'||e.key===' ') && e.target.closest('[data-visual-nav]')){e.preventDefault();e.target.closest('[data-visual-nav]').click();}
   });
   window.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',e=>{
-      e.preventDefault();
-      window.__FiveLensNavigationBusy=true;
-      try{ navigate(el.dataset.nav); }
-      catch(err){
-        console.error('[五象] 全站導覽失敗：',err,el.dataset.nav);
-        window.__FiveLensLastError={message:String(err?.message||err),feature:el.dataset.nav,at:new Date().toISOString()};
-        window.showFriendlyError?.('「'+(el.textContent?.trim()||'此功能')+'」目前無法開啟，請重新整理後再試。');
-      }
-      finally{ setTimeout(()=>{window.__FiveLensNavigationBusy=false},700); }
-    }));
+    document.querySelectorAll('[data-nav]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();navigate(el.dataset.nav)}));
   });
 })();
 </script>
